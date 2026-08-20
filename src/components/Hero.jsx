@@ -24,7 +24,7 @@ function CourtLines() {
       <line x1="600" y1="90" x2="600" y2="710" stroke={INK} strokeWidth="1" />
 
       {/* Net Line with Gold Accent */}
-      <line x1="140" y1="400" x2="1060" y2="400" stroke={ACCENT} strokeWidth="2" strokeDasharray="6 3" strokeOpacity="0.8" />
+      <line x1="140" y1="400" x2="1060" y2="400" stroke={ACCENT} strokeWidth="2" strokeDasharray="6 3" strokeOpacity="0.85" />
 
       {/* Short Service Lines */}
       <line x1="140" y1="230" x2="1060" y2="230" stroke={INK} strokeWidth="1" />
@@ -39,17 +39,17 @@ function CourtLines() {
       <line x1="140" y1="670" x2="1060" y2="670" stroke={INK} strokeWidth="0.75" strokeDasharray="4 4" />
 
       {/* Precision Court Corner Markers */}
-      <circle cx="140" cy="90" r="3" fill={ACCENT} fillOpacity="0.6" />
-      <circle cx="1060" cy="90" r="3" fill={ACCENT} fillOpacity="0.6" />
-      <circle cx="140" cy="710" r="3" fill={ACCENT} fillOpacity="0.6" />
-      <circle cx="1060" cy="710" r="3" fill={ACCENT} fillOpacity="0.6" />
-      <circle cx="600" cy="400" r="4" fill={ACCENT} fillOpacity="0.7" />
+      <circle cx="140" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.7" />
+      <circle cx="1060" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.7" />
+      <circle cx="140" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.7" />
+      <circle cx="1060" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.7" />
+      <circle cx="600" cy="400" r="4.5" fill={ACCENT} fillOpacity="0.8" />
     </svg>
   );
 }
 
 /* ── Minimalist Geometric Shuttlecock Vector ──────────────────────────── */
-function ShuttlecockIcon({ size = 26, color = ACCENT }) {
+function ShuttlecockIcon({ size = 28, color = ACCENT }) {
   return (
     <svg
       width={size}
@@ -60,15 +60,15 @@ function ShuttlecockIcon({ size = 26, color = ACCENT }) {
       aria-hidden="true"
     >
       {/* Aerodynamic Feather Skirt Ribs */}
-      <path d="M 18 16 L 3 9" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeOpacity="0.85" />
-      <path d="M 19 16 L 2 13" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeOpacity="0.95" />
-      <path d="M 20 16 L 2 16" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-      <path d="M 19 16 L 2 19" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeOpacity="0.95" />
-      <path d="M 18 16 L 3 23" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeOpacity="0.85" />
+      <path d="M 18 16 L 3 9" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeOpacity="0.85" />
+      <path d="M 19 16 L 2 13" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeOpacity="0.95" />
+      <path d="M 20 16 L 2 16" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M 19 16 L 2 19" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeOpacity="0.95" />
+      <path d="M 18 16 L 3 23" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeOpacity="0.85" />
 
       {/* Cross Feather Binding Threads */}
-      <path d="M 9 11.5 Q 7.5 16 9 20.5" stroke={color} strokeWidth="1" strokeLinecap="round" strokeOpacity="0.8" />
-      <path d="M 14 13.5 Q 13 16 14 18.5" stroke={color} strokeWidth="1" strokeLinecap="round" strokeOpacity="0.9" />
+      <path d="M 9 11.5 Q 7.5 16 9 20.5" stroke={color} strokeWidth="1.1" strokeLinecap="round" strokeOpacity="0.8" />
+      <path d="M 14 13.5 Q 13 16 14 18.5" stroke={color} strokeWidth="1.1" strokeLinecap="round" strokeOpacity="0.9" />
 
       {/* Rounded Cork Base (Leading) */}
       <path
@@ -77,7 +77,7 @@ function ShuttlecockIcon({ size = 26, color = ACCENT }) {
         stroke={INK}
         strokeWidth="0.8"
       />
-      <circle cx="21" cy="16" r="1" fill={INK} />
+      <circle cx="21" cy="16" r="1.2" fill={INK} />
     </svg>
   );
 }
@@ -86,10 +86,9 @@ function ShuttlecockIcon({ size = 26, color = ACCENT }) {
 function HeroShuttleFlight() {
   const pathRef = useRef(null);
   const shuttleRef = useRef(null);
-  const containerRef = useRef(null);
-  const [flightPhase, setFlightPhase] = useState("launching"); // "launching" | "settled"
+  const [flightPhase, setFlightPhase] = useState("launching");
 
-  const trajectoryD = "M -40 360 C 260 20, 780 40, 1140 250";
+  const trajectoryD = "M -40 480 C 280 60, 820 80, 1160 300";
 
   useEffect(() => {
     const pathEl = pathRef.current;
@@ -102,10 +101,9 @@ function HeroShuttleFlight() {
 
     let startTime = null;
     let animId = null;
-    const duration = 2200; // 2.2s flight arc
-    const delay = 350; // brief initial settle before smash flight
+    const duration = 2000;
+    const delay = 250;
 
-    // Ease-out cubic with swift acceleration and soft deceleration
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     const step = (timestamp) => {
@@ -113,7 +111,6 @@ function HeroShuttleFlight() {
       const elapsed = timestamp - startTime;
 
       if (elapsed < 0) {
-        // Waiting for delay
         animId = requestAnimationFrame(step);
         return;
       }
@@ -121,11 +118,11 @@ function HeroShuttleFlight() {
       const rawProgress = Math.min(1, elapsed / duration);
       const easedProgress = easeOutCubic(rawProgress);
 
-      // 1. Draw trail path in sync
+      // 1. Draw trajectory arc in sync
       const currentOffset = length * (1 - easedProgress);
       pathEl.style.strokeDashoffset = `${currentOffset}`;
 
-      // 2. Compute shuttle position and tangential orientation
+      // 2. Position and rotate shuttlecock along path
       const currentDist = easedProgress * length;
       const point = pathEl.getPointAtLength(currentDist);
       const nextPoint = pathEl.getPointAtLength(Math.min(length, currentDist + 2));
@@ -134,7 +131,7 @@ function HeroShuttleFlight() {
       const angleDeg = (angleRad * 180) / Math.PI;
 
       shuttleEl.style.transform = `translate3d(${point.x - 16}px, ${point.y - 16}px, 0) rotate(${angleDeg}deg)`;
-      shuttleEl.style.opacity = `${Math.min(1, rawProgress * 4)}`; // Swift fade-in on start
+      shuttleEl.style.opacity = `${Math.min(1, rawProgress * 5)}`;
 
       if (rawProgress < 1) {
         animId = requestAnimationFrame(step);
@@ -151,14 +148,10 @@ function HeroShuttleFlight() {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 pointer-events-none overflow-hidden select-none"
-      aria-hidden="true"
-    >
+    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none" aria-hidden="true">
       <svg
         className="w-full h-full"
-        viewBox="0 0 1200 600"
+        viewBox="0 0 1200 800"
         preserveAspectRatio="xMidYMid slice"
         fill="none"
       >
@@ -174,16 +167,14 @@ function HeroShuttleFlight() {
           style={{ opacity: flightPhase === "settled" ? 0.38 : 0.7 }}
         />
 
-        {/* Subtle Secondary Echo Trajectory (Ambient Depth) */}
+        {/* Ambient Subtle Secondary Trajectory Arc */}
         <path
-          d="M 60 480 C 380 180, 860 140, 1180 380"
+          d="M 40 560 C 360 220, 880 180, 1180 440"
           stroke={ACCENT}
           strokeWidth="1"
           strokeLinecap="round"
           strokeDasharray="4 6"
           strokeOpacity="0.2"
-          className="animate-pulse"
-          style={{ animationDuration: "8s" }}
         />
       </svg>
 
@@ -193,26 +184,17 @@ function HeroShuttleFlight() {
         className="absolute top-0 left-0 will-change-transform"
         style={{
           opacity: 0,
-          transform: "translate3d(-50px, 360px, 0)",
-          transition: flightPhase === "settled" ? "opacity 1000ms ease" : "none",
+          transform: "translate3d(-50px, 480px, 0)",
         }}
       >
         <div
           style={{
-            animation: flightPhase === "settled" ? "shuttleSway 6s ease-in-out infinite alternate" : "none",
+            animation: flightPhase === "settled" ? "heroShuttleSway 6s ease-in-out infinite alternate" : "none",
           }}
         >
           <ShuttlecockIcon size={28} color={ACCENT} />
         </div>
       </div>
-
-      <style>{`
-        @keyframes shuttleSway {
-          0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(-3deg); }
-          100% { transform: translateY(6px) rotate(3deg); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -256,41 +238,32 @@ function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.25, opac
 }
 
 /* ── Animated Gold Divider Line Reveal ────────────────────────────────── */
-function GoldAccentReveal({ delay = 0.85 }) {
-  const lineRef = useRef(null);
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setRevealed(true);
-    }, delay * 1000);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
+function GoldAccentReveal() {
   return (
-    <div className="flex items-center justify-center gap-3 my-5 pointer-events-none select-none">
+    <div
+      className="flex items-center justify-center gap-3 my-5 pointer-events-none select-none"
+      style={{
+        animation: "heroAccentLineReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both",
+      }}
+    >
       <div
-        className="h-px transition-all duration-1000 ease-out"
+        className="h-px w-16 sm:w-20"
         style={{
-          width: revealed ? "72px" : "0px",
           background: `linear-gradient(90deg, transparent, ${ACCENT})`,
-          opacity: revealed ? 0.8 : 0,
+          opacity: 0.85,
         }}
       />
       <div
-        className="w-1.5 h-1.5 rotate-45 transition-all duration-700 delay-300"
+        className="w-1.5 h-1.5 rotate-45"
         style={{
           background: ACCENT,
-          opacity: revealed ? 1 : 0,
-          transform: revealed ? "rotate(45deg) scale(1)" : "rotate(0deg) scale(0)",
         }}
       />
       <div
-        className="h-px transition-all duration-1000 ease-out"
+        className="h-px w-16 sm:w-20"
         style={{
-          width: revealed ? "72px" : "0px",
           background: `linear-gradient(90deg, ${ACCENT}, transparent)`,
-          opacity: revealed ? 0.8 : 0,
+          opacity: 0.85,
         }}
       />
     </div>
@@ -313,8 +286,7 @@ function MagneticCTAButton({ children, onClick }) {
     const deltaX = e.clientX - centerX;
     const deltaY = e.clientY - centerY;
 
-    // Magnetic pull with max dampening radius
-    const pullFactor = 0.32;
+    const pullFactor = 0.35;
     const maxDisplacement = 16;
 
     const targetX = Math.max(-maxDisplacement, Math.min(maxDisplacement, deltaX * pullFactor));
@@ -361,9 +333,6 @@ export default function GeometricHero({ onOpenModal }) {
   const midLayerRef = useRef(null);
   const contentLayerRef = useRef(null);
 
-  // Entrance choreography state
-  const [mounted, setMounted] = useState(false);
-
   // Parallax smooth lerping state
   const targetPos = useRef({ x: 0, y: 0 });
   const currentPos = useRef({ x: 0, y: 0 });
@@ -372,15 +341,6 @@ export default function GeometricHero({ onOpenModal }) {
   // Scroll exit state
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  useEffect(() => {
-    // Trigger entrance choreography
-    const mountTimer = setTimeout(() => {
-      setMounted(true);
-    }, 60);
-
-    return () => clearTimeout(mountTimer);
-  }, []);
-
   // Parallax requestAnimationFrame Loop
   useEffect(() => {
     let active = true;
@@ -388,7 +348,6 @@ export default function GeometricHero({ onOpenModal }) {
     const loop = () => {
       if (!active) return;
 
-      // Smooth lerp easing factor (0.065 for refined editorial fluid feel)
       currentPos.current.x += (targetPos.current.x - currentPos.current.x) * 0.065;
       currentPos.current.y += (targetPos.current.y - currentPos.current.y) * 0.065;
 
@@ -420,7 +379,6 @@ export default function GeometricHero({ onOpenModal }) {
       const rect = heroRef.current.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
 
-      // Normalized coordinates from -1 to 1 relative to center of hero
       const normX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
       const normY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
 
@@ -460,7 +418,6 @@ export default function GeometricHero({ onOpenModal }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Compute scroll exit styling
   const exitOpacity = Math.max(0, 1 - scrollProgress * 1.35);
   const exitScale = 1 - scrollProgress * 0.05;
   const exitTranslateY = -scrollProgress * 50;
@@ -471,6 +428,34 @@ export default function GeometricHero({ onOpenModal }) {
       ref={heroRef}
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white selection:bg-[#C5A059] selection:text-[#0A0A0A]"
     >
+      <style>{`
+        @keyframes heroFadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes heroAccentLineReveal {
+          from {
+            opacity: 0;
+            transform: scaleX(0);
+          }
+          to {
+            opacity: 1;
+            transform: scaleX(1);
+          }
+        }
+        @keyframes heroShuttleSway {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(-3deg); }
+          100% { transform: translateY(6px) rotate(3deg); }
+        }
+      `}</style>
+
       {/* ── Background Layer: Badminton Court Blueprint (Inverse Parallax) ── */}
       <div
         ref={courtLayerRef}
@@ -513,11 +498,9 @@ export default function GeometricHero({ onOpenModal }) {
       >
         {/* Step 1: Kicker Reveal */}
         <div
-          className="transition-all duration-900 ease-out inline-block mb-8 md:mb-10"
+          className="inline-block mb-8 md:mb-10"
           style={{
-            opacity: mounted ? 1 : 0,
-            transform: mounted ? "translateY(0px)" : "translateY(14px)",
-            transitionDelay: "200ms",
+            animation: "heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both",
           }}
         >
           <div
@@ -554,23 +537,19 @@ export default function GeometricHero({ onOpenModal }) {
           }}
         >
           <span
-            className="block transition-all duration-1000 ease-out"
+            className="block"
             style={{
               color: INK,
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? "translateY(0px)" : "translateY(22px)",
-              transitionDelay: "450ms",
+              animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both",
             }}
           >
             Racquets Cult
           </span>
           <span
-            className="block pb-2 transition-all duration-1000 ease-out"
+            className="block pb-2"
             style={{
               color: INK,
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? "translateY(0px)" : "translateY(22px)",
-              transitionDelay: "650ms",
+              animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both",
             }}
           >
             Private Coaching
@@ -578,27 +557,17 @@ export default function GeometricHero({ onOpenModal }) {
         </h1>
 
         {/* Step 4: Animated Gold Accent Line Reveal */}
-        <div
-          className="transition-opacity duration-700"
-          style={{
-            opacity: mounted ? 1 : 0,
-            transitionDelay: "850ms",
-          }}
-        >
-          <GoldAccentReveal delay={0.9} />
-        </div>
+        <GoldAccentReveal />
 
         {/* Step 5: Subtext Reveal */}
         <p
-          className="text-base sm:text-lg mb-10 max-w-xl mx-auto transition-all duration-1000 ease-out"
+          className="text-base sm:text-lg mb-10 max-w-xl mx-auto"
           style={{
             fontFamily: FONT_BODY,
             fontWeight: 300,
             lineHeight: 1.8,
             color: "rgba(10,10,10,0.55)",
-            opacity: mounted ? 1 : 0,
-            transform: mounted ? "translateY(0px)" : "translateY(16px)",
-            transitionDelay: "1050ms",
+            animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both",
           }}
         >
           Rc's is a private badminton coaching practice for players who
@@ -607,11 +576,8 @@ export default function GeometricHero({ onOpenModal }) {
 
         {/* Step 6: Magnetic CTA Button Reveal */}
         <div
-          className="transition-all duration-1000 ease-out"
           style={{
-            opacity: mounted ? 1 : 0,
-            transform: mounted ? "translateY(0px)" : "translateY(16px)",
-            transitionDelay: "1250ms",
+            animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.15s both",
           }}
         >
           <MagneticCTAButton onClick={onOpenModal}>
