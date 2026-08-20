@@ -7,43 +7,151 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FONT_HEADING, FONT_BODY, INK, ACCENT } from "../lib/tokens.js";
 import { GhostButton } from "./ui.jsx";
 
-/* ── Badminton Court Background Blueprint ────────────────────────────── */
+/* ── Rich Multi-Layered Badminton Court Background Blueprint ─────────── */
 function CourtLines() {
   return (
     <svg
       className="absolute inset-0 w-full h-full pointer-events-none select-none"
       viewBox="0 0 1200 800"
       preserveAspectRatio="xMidYMid slice"
-      style={{ opacity: 0.08 }}
+      fill="none"
       aria-hidden="true"
     >
-      {/* Outer Doubles Boundary */}
-      <rect x="140" y="90" width="920" height="620" stroke={INK} strokeWidth="1.5" fill="none" />
+      <defs>
+        {/* Subtle repeating court net mesh pattern */}
+        <pattern id="netMesh" width="16" height="16" patternUnits="userSpaceOnUse">
+          <path d="M 0 8 L 8 0 M 8 16 L 16 8 M 0 8 L 8 16 M 8 0 L 16 8" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.08" />
+        </pattern>
 
-      {/* Center Service Line */}
-      <line x1="600" y1="90" x2="600" y2="710" stroke={INK} strokeWidth="1" />
+        {/* Linear gradients for subtle depth fades */}
+        <linearGradient id="goldFadeX" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={ACCENT} stopOpacity="0.1" />
+          <stop offset="50%" stopColor={ACCENT} stopOpacity="0.65" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="0.1" />
+        </linearGradient>
 
-      {/* Net Line with Gold Accent */}
-      <line x1="140" y1="400" x2="1060" y2="400" stroke={ACCENT} strokeWidth="2" strokeDasharray="6 3" strokeOpacity="0.9" />
+        <linearGradient id="inkFadeY" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={INK} stopOpacity="0.03" />
+          <stop offset="50%" stopColor={INK} stopOpacity="0.14" />
+          <stop offset="100%" stopColor={INK} stopOpacity="0.03" />
+        </linearGradient>
+      </defs>
 
-      {/* Short Service Lines */}
-      <line x1="140" y1="230" x2="1060" y2="230" stroke={INK} strokeWidth="1" />
-      <line x1="140" y1="570" x2="1060" y2="570" stroke={INK} strokeWidth="1" />
+      {/* ── Net Mesh Subtle Pattern Zones (Top-Right & Bottom-Left) ── */}
+      <rect x="600" y="90" width="360" height="140" fill="url(#netMesh)" />
+      <rect x="240" y="570" width="360" height="140" fill="url(#netMesh)" />
 
-      {/* Singles Sidelines */}
-      <line x1="240" y1="90" x2="240" y2="710" stroke={INK} strokeWidth="1" />
-      <line x1="960" y1="90" x2="960" y2="710" stroke={INK} strokeWidth="1" />
+      {/* ── Outer Tramlines & Boundary Framing (Multiple Weights) ── */}
+      {/* Outer border offset line (Hairline) */}
+      <rect x="120" y="70" width="960" height="660" stroke={INK} strokeWidth="0.5" strokeOpacity="0.04" />
+      {/* Outer Doubles Boundary (Substantial line) */}
+      <rect x="140" y="90" width="920" height="620" stroke={INK} strokeWidth="1.75" strokeOpacity="0.14" />
+      {/* Inner offset gold accent hairline */}
+      <rect x="144" y="94" width="912" height="612" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.16" />
 
-      {/* Doubles Back Service Lines */}
-      <line x1="140" y1="130" x2="1060" y2="130" stroke={INK} strokeWidth="0.75" strokeDasharray="4 4" />
-      <line x1="140" y1="670" x2="1060" y2="670" stroke={INK} strokeWidth="0.75" strokeDasharray="4 4" />
+      {/* ── Center Service Line ── */}
+      <line x1="600" y1="90" x2="600" y2="710" stroke={INK} strokeWidth="1.25" strokeOpacity="0.12" />
+      {/* Center line gold precision accent */}
+      <line x1="600" y1="230" x2="600" y2="570" stroke={ACCENT} strokeWidth="1" strokeOpacity="0.35" strokeDasharray="8 6" />
 
-      {/* Precision Court Corner Markers */}
-      <circle cx="140" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.8" />
-      <circle cx="1060" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.8" />
-      <circle cx="140" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.8" />
-      <circle cx="1060" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.8" />
-      <circle cx="600" cy="400" r="4.5" fill={ACCENT} fillOpacity="0.9" />
+      {/* ── Center Net Line with Prominent Gold Accent & Mesh Overlay ── */}
+      <line x1="100" y1="400" x2="1100" y2="400" stroke={ACCENT} strokeWidth="2.5" strokeDasharray="8 4" strokeOpacity="0.45" />
+      <line x1="140" y1="396" x2="1060" y2="396" stroke={INK} strokeWidth="0.75" strokeOpacity="0.08" />
+      <line x1="140" y1="404" x2="1060" y2="404" stroke={INK} strokeWidth="0.75" strokeOpacity="0.08" />
+
+      {/* ── Short Service Lines (Front Court) ── */}
+      <line x1="140" y1="230" x2="1060" y2="230" stroke={INK} strokeWidth="1.25" strokeOpacity="0.12" />
+      <line x1="140" y1="570" x2="1060" y2="570" stroke={INK} strokeWidth="1.25" strokeOpacity="0.12" />
+      {/* Gold highlight accents along service boundary */}
+      <line x1="240" y1="230" x2="960" y2="230" stroke={ACCENT} strokeWidth="1" strokeOpacity="0.25" />
+      <line x1="240" y1="570" x2="960" y2="570" stroke={ACCENT} strokeWidth="1" strokeOpacity="0.25" />
+
+      {/* ── Singles Sidelines ── */}
+      <line x1="240" y1="90" x2="240" y2="710" stroke={INK} strokeWidth="1.2" strokeOpacity="0.1" />
+      <line x1="960" y1="90" x2="960" y2="710" stroke={INK} strokeWidth="1.2" strokeOpacity="0.1" />
+      {/* Singles tramlines gold accent hairlines */}
+      <line x1="236" y1="90" x2="236" y2="710" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.15" />
+      <line x1="964" y1="90" x2="964" y2="710" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.15" />
+
+      {/* ── Doubles Back Service Lines ── */}
+      <line x1="140" y1="130" x2="1060" y2="130" stroke={INK} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.1" />
+      <line x1="140" y1="670" x2="1060" y2="670" stroke={INK} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.1" />
+
+      {/* ── Precision Architectural Intersection Crosshairs ── */}
+      {/* Net center intersection */}
+      <g stroke={ACCENT} strokeWidth="1.2" strokeOpacity="0.6">
+        <line x1="590" y1="400" x2="610" y2="400" />
+        <line x1="600" y1="390" x2="600" y2="410" />
+        <circle cx="600" cy="400" r="4.5" fill="none" strokeWidth="0.8" strokeOpacity="0.5" />
+      </g>
+      {/* Service T-Junctions */}
+      <g stroke={ACCENT} strokeWidth="1" strokeOpacity="0.45">
+        <line x1="593" y1="230" x2="607" y2="230" />
+        <line x1="600" y1="223" x2="600" y2="237" />
+        <line x1="593" y1="570" x2="607" y2="570" />
+        <line x1="600" y1="563" x2="600" y2="577" />
+      </g>
+      {/* Corner Registration Crosshairs */}
+      <g stroke={ACCENT} strokeWidth="1" strokeOpacity="0.4">
+        <line x1="132" y1="90" x2="148" y2="90" /><line x1="140" y1="82" x2="140" y2="98" />
+        <line x1="1052" y1="90" x2="1068" y2="90" /><line x1="1060" y1="82" x2="1060" y2="98" />
+        <line x1="132" y1="710" x2="148" y2="710" /><line x1="140" y1="702" x2="140" y2="718" />
+        <line x1="1052" y1="710" x2="1068" y2="710" /><line x1="1060" y1="702" x2="1060" y2="718" />
+      </g>
+
+      {/* ── Corner Nodes ── */}
+      <circle cx="140" cy="90" r="3" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="1060" cy="90" r="3" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="140" cy="710" r="3" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="1060" cy="710" r="3" fill={ACCENT} fillOpacity="0.75" />
+
+      {/* ── Technical Blueprint Dimension Notation ── */}
+      <text
+        x="150"
+        y="82"
+        fill={INK}
+        fillOpacity="0.3"
+        fontSize="8"
+        fontFamily={FONT_BODY}
+        letterSpacing="0.2em"
+      >
+        DIM: 13.40M × 6.10M
+      </text>
+      <text
+        x="1050"
+        y="82"
+        textAnchor="end"
+        fill={ACCENT}
+        fillOpacity="0.45"
+        fontSize="8"
+        fontFamily={FONT_BODY}
+        letterSpacing="0.25em"
+      >
+        COURT 01 // SINGLES & DOUBLES
+      </text>
+      <text
+        x="150"
+        y="392"
+        fill={ACCENT}
+        fillOpacity="0.4"
+        fontSize="7.5"
+        fontFamily={FONT_BODY}
+        letterSpacing="0.2em"
+      >
+        NET ELEVATION 1.55M
+      </text>
+      <text
+        x="1050"
+        y="392"
+        textAnchor="end"
+        fill={INK}
+        fillOpacity="0.25"
+        fontSize="7.5"
+        fontFamily={FONT_BODY}
+        letterSpacing="0.2em"
+      >
+        CENTER SERVICE ZONE
+      </text>
     </svg>
   );
 }
@@ -153,26 +261,56 @@ function HeroShuttleFlight() {
         preserveAspectRatio="xMidYMid slice"
         fill="none"
       >
-        {/* Animated Main Smash Trajectory Trail */}
+        {/* Animated Main Smash Trajectory Trail with Rich Gold Tone */}
         <path
           ref={pathRef}
           d={trajectoryD}
           stroke={ACCENT}
-          strokeWidth="1.75"
+          strokeWidth="2"
           strokeLinecap="round"
-          strokeDasharray="6 4"
+          strokeDasharray="8 4"
           className="transition-opacity duration-1000"
-          style={{ opacity: flightPhase === "settled" ? 0.4 : 0.8 }}
+          style={{ opacity: flightPhase === "settled" ? 0.5 : 0.85 }}
         />
 
-        {/* Ambient Subtle Secondary Trajectory Arc */}
+        {/* ── Multi-Scale Atmospheric Trajectory Arcs Across Court ── */}
+        {/* High Clear Sweeping Arc (Top) */}
         <path
-          d="M 40 560 C 360 220, 880 180, 1180 440"
+          d="M -80 340 C 320 -20, 880 -10, 1260 240"
           stroke={ACCENT}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeDasharray="6 6"
+          strokeOpacity="0.32"
+        />
+
+        {/* Drive Flat Trajectory (Mid-Court) */}
+        <path
+          d="M 40 560 C 380 200, 880 160, 1180 420"
+          stroke={ACCENT}
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeDasharray="4 8"
+          strokeOpacity="0.25"
+        />
+
+        {/* Crosscourt Steep Drop Shot (Left) */}
+        <path
+          d="M -20 180 Q 220 380 160 680"
+          stroke={ACCENT}
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeOpacity="0.22"
+        />
+
+        {/* Reverse Crosscourt Angle (Right) */}
+        <path
+          d="M 1240 500 Q 940 320 820 620"
+          stroke={INK}
           strokeWidth="1"
           strokeLinecap="round"
-          strokeDasharray="4 6"
-          strokeOpacity="0.25"
+          strokeDasharray="3 5"
+          strokeOpacity="0.12"
         />
       </svg>
 
@@ -197,8 +335,8 @@ function HeroShuttleFlight() {
   );
 }
 
-/* ── Secondary Subtle Trajectory Arc ─────────────────────────────────── */
-function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.25, opacity = 0.25 }) {
+/* ── Secondary Animated Trajectory Arc ───────────────────────────────── */
+function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.5, opacity = 0.3 }) {
   const pathRef = useRef(null);
 
   useEffect(() => {
@@ -217,9 +355,9 @@ function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.25, opac
   return (
     <svg
       className={`absolute pointer-events-none select-none ${className}`}
-      width="420"
-      height="220"
-      viewBox="0 0 420 220"
+      width="460"
+      height="240"
+      viewBox="0 0 460 240"
       fill="none"
       aria-hidden="true"
     >
@@ -441,6 +579,20 @@ export default function GeometricHero({ onOpenModal }) {
         }
       `}</style>
 
+      {/* ── Background Subtle Gold Ambient Corner Washes & Radial Warmth ── */}
+      {/* Top-Left & Bottom-Right gold corner warmth */}
+      <div
+        className="absolute inset-0 pointer-events-none select-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 70% 55% at 50% 48%, rgba(197, 160, 89, 0.045) 0%, rgba(197, 160, 89, 0.015) 50%, transparent 80%),
+            linear-gradient(135deg, rgba(197, 160, 89, 0.035) 0%, transparent 35%),
+            linear-gradient(315deg, rgba(197, 160, 89, 0.03) 0%, transparent 35%)
+          `,
+        }}
+        aria-hidden="true"
+      />
+
       {/* ── Background Layer: Badminton Court Blueprint (Inverse Parallax) ── */}
       <div
         ref={courtLayerRef}
@@ -449,7 +601,7 @@ export default function GeometricHero({ onOpenModal }) {
         <CourtLines />
       </div>
 
-      {/* ── Mid Layer: Hero Shuttle Flight & Trajectory Arcs (Positive Parallax) ── */}
+      {/* ── Mid Layer: Hero Shuttle Flight & Multi-Scale Trajectory Arcs (Positive Parallax) ── */}
       <div
         ref={midLayerRef}
         className="absolute inset-0 overflow-hidden pointer-events-none will-change-transform"
@@ -458,16 +610,16 @@ export default function GeometricHero({ onOpenModal }) {
 
         {/* Decorative Trajectory Arcs */}
         <AtmosphericArc
-          d="M 10 190 Q 200 -30 400 160"
+          d="M 10 200 Q 220 -30 440 170"
           delay={0.6}
-          opacity={0.3}
-          className="left-[-4%] top-[12%] md:top-[16%]"
+          opacity={0.35}
+          className="left-[-4%] top-[10%] md:top-[14%]"
         />
         <AtmosphericArc
-          d="M 400 20 Q 220 130 10 170"
+          d="M 440 20 Q 240 140 10 180"
           delay={0.8}
-          opacity={0.25}
-          className="right-[-2%] bottom-[12%] md:bottom-[16%]"
+          opacity={0.3}
+          className="right-[-2%] bottom-[10%] md:bottom-[14%]"
         />
       </div>
 
