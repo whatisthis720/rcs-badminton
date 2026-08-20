@@ -1,13 +1,16 @@
 /* ────────────────────────────────────────────────────────────────────── */
 /* GeometricHero — Premium Athletic-Editorial Hero Section               */
-/* Choreographed reveal, trajectory flight, parallax & magnetic motion   */
+/* Dual-Accent Court-Tech Color Experiment: Gold (#C5A059) + Teal (#2B6E7A)*/
 /* ────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FONT_HEADING, FONT_BODY, INK, ACCENT } from "../lib/tokens.js";
 import { GhostButton } from "./ui.jsx";
 
-/* ── Rich Multi-Layered Badminton Court Background Blueprint ─────────── */
+// Secondary Technical Court-Blue/Teal Accent
+const TEAL = "#2B6E7A";
+
+/* ── Rich Technical Badminton Court Blueprint (Dual-Accent Overlay) ─── */
 function CourtLines() {
   return (
     <svg
@@ -18,81 +21,81 @@ function CourtLines() {
       aria-hidden="true"
     >
       <defs>
-        {/* Subtle repeating court net mesh pattern */}
-        <pattern id="netMesh" width="16" height="16" patternUnits="userSpaceOnUse">
-          <path d="M 0 8 L 8 0 M 8 16 L 16 8 M 0 8 L 8 16 M 8 0 L 16 8" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.08" />
+        {/* Subtle repeating court net mesh pattern in technical teal */}
+        <pattern id="tealNetMesh" width="16" height="16" patternUnits="userSpaceOnUse">
+          <path d="M 0 8 L 8 0 M 8 16 L 16 8 M 0 8 L 8 16 M 8 0 L 16 8" stroke={TEAL} strokeWidth="0.5" strokeOpacity="0.14" />
         </pattern>
 
-        {/* Linear gradients for subtle depth fades */}
-        <linearGradient id="goldFadeX" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={ACCENT} stopOpacity="0.1" />
-          <stop offset="50%" stopColor={ACCENT} stopOpacity="0.65" />
-          <stop offset="100%" stopColor={ACCENT} stopOpacity="0.1" />
+        <linearGradient id="tealFadeX" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={TEAL} stopOpacity="0.05" />
+          <stop offset="50%" stopColor={TEAL} stopOpacity="0.45" />
+          <stop offset="100%" stopColor={TEAL} stopOpacity="0.05" />
         </linearGradient>
 
-        <linearGradient id="inkFadeY" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={INK} stopOpacity="0.03" />
-          <stop offset="50%" stopColor={INK} stopOpacity="0.14" />
-          <stop offset="100%" stopColor={INK} stopOpacity="0.03" />
+        <linearGradient id="goldTealNet" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={TEAL} stopOpacity="0.3" />
+          <stop offset="35%" stopColor={ACCENT} stopOpacity="0.75" />
+          <stop offset="65%" stopColor={ACCENT} stopOpacity="0.75" />
+          <stop offset="100%" stopColor={TEAL} stopOpacity="0.3" />
         </linearGradient>
       </defs>
 
-      {/* ── Net Mesh Subtle Pattern Zones (Top-Right & Bottom-Left) ── */}
-      <rect x="600" y="90" width="360" height="140" fill="url(#netMesh)" />
-      <rect x="240" y="570" width="360" height="140" fill="url(#netMesh)" />
+      {/* ── Technical Net Mesh Overlay Zones (Top-Right & Bottom-Left) ── */}
+      <rect x="600" y="90" width="360" height="140" fill="url(#tealNetMesh)" />
+      <rect x="240" y="570" width="360" height="140" fill="url(#tealNetMesh)" />
 
       {/* ── Outer Tramlines & Boundary Framing (Multiple Weights) ── */}
-      {/* Outer border offset line (Hairline) */}
-      <rect x="120" y="70" width="960" height="660" stroke={INK} strokeWidth="0.5" strokeOpacity="0.04" />
-      {/* Outer Doubles Boundary (Substantial line) */}
+      {/* Outer border offset line (Hairline Teal) */}
+      <rect x="120" y="70" width="960" height="660" stroke={TEAL} strokeWidth="0.75" strokeOpacity="0.18" />
+      {/* Outer Doubles Boundary (Substantial Ink Line) */}
       <rect x="140" y="90" width="920" height="620" stroke={INK} strokeWidth="1.75" strokeOpacity="0.14" />
       {/* Inner offset gold accent hairline */}
-      <rect x="144" y="94" width="912" height="612" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.16" />
+      <rect x="144" y="94" width="912" height="612" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.2" />
 
       {/* ── Center Service Line ── */}
       <line x1="600" y1="90" x2="600" y2="710" stroke={INK} strokeWidth="1.25" strokeOpacity="0.12" />
-      {/* Center line gold precision accent */}
-      <line x1="600" y1="230" x2="600" y2="570" stroke={ACCENT} strokeWidth="1" strokeOpacity="0.35" strokeDasharray="8 6" />
+      {/* Center line teal precision dashes */}
+      <line x1="600" y1="230" x2="600" y2="570" stroke={TEAL} strokeWidth="1" strokeOpacity="0.45" strokeDasharray="8 6" />
 
-      {/* ── Center Net Line with Prominent Gold Accent & Mesh Overlay ── */}
-      <line x1="100" y1="400" x2="1100" y2="400" stroke={ACCENT} strokeWidth="2.5" strokeDasharray="8 4" strokeOpacity="0.45" />
-      <line x1="140" y1="396" x2="1060" y2="396" stroke={INK} strokeWidth="0.75" strokeOpacity="0.08" />
-      <line x1="140" y1="404" x2="1060" y2="404" stroke={INK} strokeWidth="0.75" strokeOpacity="0.08" />
+      {/* ── Center Net Line with Dual Gold/Teal Sports-Broadcast Accent ── */}
+      <line x1="100" y1="400" x2="1100" y2="400" stroke="url(#goldTealNet)" strokeWidth="2.5" strokeDasharray="8 4" />
+      <line x1="140" y1="396" x2="1060" y2="396" stroke={TEAL} strokeWidth="0.75" strokeOpacity="0.25" />
+      <line x1="140" y1="404" x2="1060" y2="404" stroke={TEAL} strokeWidth="0.75" strokeOpacity="0.25" />
 
       {/* ── Short Service Lines (Front Court) ── */}
       <line x1="140" y1="230" x2="1060" y2="230" stroke={INK} strokeWidth="1.25" strokeOpacity="0.12" />
       <line x1="140" y1="570" x2="1060" y2="570" stroke={INK} strokeWidth="1.25" strokeOpacity="0.12" />
-      {/* Gold highlight accents along service boundary */}
-      <line x1="240" y1="230" x2="960" y2="230" stroke={ACCENT} strokeWidth="1" strokeOpacity="0.25" />
-      <line x1="240" y1="570" x2="960" y2="570" stroke={ACCENT} strokeWidth="1" strokeOpacity="0.25" />
+      {/* Teal tracking highlights along service boundaries */}
+      <line x1="240" y1="230" x2="960" y2="230" stroke={TEAL} strokeWidth="1" strokeOpacity="0.4" strokeDasharray="4 4" />
+      <line x1="240" y1="570" x2="960" y2="570" stroke={TEAL} strokeWidth="1" strokeOpacity="0.4" strokeDasharray="4 4" />
 
       {/* ── Singles Sidelines ── */}
       <line x1="240" y1="90" x2="240" y2="710" stroke={INK} strokeWidth="1.2" strokeOpacity="0.1" />
       <line x1="960" y1="90" x2="960" y2="710" stroke={INK} strokeWidth="1.2" strokeOpacity="0.1" />
-      {/* Singles tramlines gold accent hairlines */}
-      <line x1="236" y1="90" x2="236" y2="710" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.15" />
-      <line x1="964" y1="90" x2="964" y2="710" stroke={ACCENT} strokeWidth="0.5" strokeOpacity="0.15" />
+      {/* Singles tramlines teal accent hairlines */}
+      <line x1="236" y1="90" x2="236" y2="710" stroke={TEAL} strokeWidth="0.5" strokeOpacity="0.25" />
+      <line x1="964" y1="90" x2="964" y2="710" stroke={TEAL} strokeWidth="0.5" strokeOpacity="0.25" />
 
       {/* ── Doubles Back Service Lines ── */}
-      <line x1="140" y1="130" x2="1060" y2="130" stroke={INK} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.1" />
-      <line x1="140" y1="670" x2="1060" y2="670" stroke={INK} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.1" />
+      <line x1="140" y1="130" x2="1060" y2="130" stroke={TEAL} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.25" />
+      <line x1="140" y1="670" x2="1060" y2="670" stroke={TEAL} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.25" />
 
       {/* ── Precision Architectural Intersection Crosshairs ── */}
       {/* Net center intersection */}
-      <g stroke={ACCENT} strokeWidth="1.2" strokeOpacity="0.6">
+      <g stroke={ACCENT} strokeWidth="1.2" strokeOpacity="0.8">
         <line x1="590" y1="400" x2="610" y2="400" />
         <line x1="600" y1="390" x2="600" y2="410" />
-        <circle cx="600" cy="400" r="4.5" fill="none" strokeWidth="0.8" strokeOpacity="0.5" />
+        <circle cx="600" cy="400" r="4.5" fill="none" strokeWidth="0.8" stroke={TEAL} strokeOpacity="0.6" />
       </g>
-      {/* Service T-Junctions */}
-      <g stroke={ACCENT} strokeWidth="1" strokeOpacity="0.45">
+      {/* Service T-Junctions in Technical Teal */}
+      <g stroke={TEAL} strokeWidth="1" strokeOpacity="0.65">
         <line x1="593" y1="230" x2="607" y2="230" />
         <line x1="600" y1="223" x2="600" y2="237" />
         <line x1="593" y1="570" x2="607" y2="570" />
         <line x1="600" y1="563" x2="600" y2="577" />
       </g>
-      {/* Corner Registration Crosshairs */}
-      <g stroke={ACCENT} strokeWidth="1" strokeOpacity="0.4">
+      {/* Corner Registration Crosshairs in Teal & Gold */}
+      <g stroke={TEAL} strokeWidth="1" strokeOpacity="0.5">
         <line x1="132" y1="90" x2="148" y2="90" /><line x1="140" y1="82" x2="140" y2="98" />
         <line x1="1052" y1="90" x2="1068" y2="90" /><line x1="1060" y1="82" x2="1060" y2="98" />
         <line x1="132" y1="710" x2="148" y2="710" /><line x1="140" y1="702" x2="140" y2="718" />
@@ -100,40 +103,40 @@ function CourtLines() {
       </g>
 
       {/* ── Corner Nodes ── */}
-      <circle cx="140" cy="90" r="3" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="1060" cy="90" r="3" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="140" cy="710" r="3" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="1060" cy="710" r="3" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="140" cy="90" r="3" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="1060" cy="90" r="3" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="140" cy="710" r="3" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="1060" cy="710" r="3" fill={ACCENT} fillOpacity="0.8" />
 
-      {/* ── Technical Blueprint Dimension Notation ── */}
+      {/* ── Technical Broadcast Tracking Dimension Labels ── */}
       <text
         x="150"
         y="82"
-        fill={INK}
-        fillOpacity="0.3"
+        fill={TEAL}
+        fillOpacity="0.6"
         fontSize="8"
         fontFamily={FONT_BODY}
         letterSpacing="0.2em"
       >
-        DIM: 13.40M × 6.10M
+        DIM: 13.40M × 6.10M [COURT SYS]
       </text>
       <text
         x="1050"
         y="82"
         textAnchor="end"
         fill={ACCENT}
-        fillOpacity="0.45"
+        fillOpacity="0.65"
         fontSize="8"
         fontFamily={FONT_BODY}
         letterSpacing="0.25em"
       >
-        COURT 01 // SINGLES & DOUBLES
+        COURT 01 // BROADCAST TRACKING
       </text>
       <text
         x="150"
         y="392"
         fill={ACCENT}
-        fillOpacity="0.4"
+        fillOpacity="0.6"
         fontSize="7.5"
         fontFamily={FONT_BODY}
         letterSpacing="0.2em"
@@ -144,13 +147,13 @@ function CourtLines() {
         x="1050"
         y="392"
         textAnchor="end"
-        fill={INK}
-        fillOpacity="0.25"
+        fill={TEAL}
+        fillOpacity="0.55"
         fontSize="7.5"
         fontFamily={FONT_BODY}
         letterSpacing="0.2em"
       >
-        CENTER SERVICE ZONE
+        CENTER SERVICE VECTOR
       </text>
     </svg>
   );
@@ -174,8 +177,8 @@ function ShuttlecockIcon({ size = 28, color = ACCENT }) {
       <path d="M 19 16 L 2 19" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeOpacity="0.95" />
       <path d="M 18 16 L 3 23" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeOpacity="0.85" />
 
-      {/* Cross Feather Binding Threads */}
-      <path d="M 9 11.5 Q 7.5 16 9 20.5" stroke={color} strokeWidth="1.1" strokeLinecap="round" strokeOpacity="0.8" />
+      {/* Cross Feather Binding Threads in subtle Teal accent */}
+      <path d="M 9 11.5 Q 7.5 16 9 20.5" stroke={TEAL} strokeWidth="1.1" strokeLinecap="round" strokeOpacity="0.85" />
       <path d="M 14 13.5 Q 13 16 14 18.5" stroke={color} strokeWidth="1.1" strokeLinecap="round" strokeOpacity="0.9" />
 
       {/* Rounded Cork Base (Leading) */}
@@ -261,56 +264,57 @@ function HeroShuttleFlight() {
         preserveAspectRatio="xMidYMid slice"
         fill="none"
       >
-        {/* Animated Main Smash Trajectory Trail with Rich Gold Tone */}
+        {/* Animated Main Smash Trajectory Trail in Gold Accent */}
         <path
           ref={pathRef}
           d={trajectoryD}
           stroke={ACCENT}
-          strokeWidth="2"
+          strokeWidth="2.2"
           strokeLinecap="round"
           strokeDasharray="8 4"
           className="transition-opacity duration-1000"
-          style={{ opacity: flightPhase === "settled" ? 0.5 : 0.85 }}
+          style={{ opacity: flightPhase === "settled" ? 0.55 : 0.9 }}
         />
 
-        {/* ── Multi-Scale Atmospheric Trajectory Arcs Across Court ── */}
-        {/* High Clear Sweeping Arc (Top) */}
+        {/* ── Multi-Scale Atmospheric Trajectory Arcs in Teal & Gold ── */}
+        {/* High Clear Sweeping Arc (Top Gold) */}
         <path
           d="M -80 340 C 320 -20, 880 -10, 1260 240"
           stroke={ACCENT}
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeDasharray="6 6"
+          strokeOpacity="0.35"
+        />
+
+        {/* Drive Flat Trajectory (Mid-Court Teal) */}
+        <path
+          d="M 40 560 C 380 200, 880 160, 1180 420"
+          stroke={TEAL}
+          strokeWidth="1.35"
+          strokeLinecap="round"
+          strokeDasharray="5 7"
+          strokeOpacity="0.38"
+        />
+
+        {/* Crosscourt Steep Drop Shot (Left Teal) */}
+        <path
+          d="M -20 180 Q 220 380 160 680"
+          stroke={TEAL}
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeDasharray="6 4"
           strokeOpacity="0.32"
         />
 
-        {/* Drive Flat Trajectory (Mid-Court) */}
-        <path
-          d="M 40 560 C 380 200, 880 160, 1180 420"
-          stroke={ACCENT}
-          strokeWidth="1.25"
-          strokeLinecap="round"
-          strokeDasharray="4 8"
-          strokeOpacity="0.25"
-        />
-
-        {/* Crosscourt Steep Drop Shot (Left) */}
-        <path
-          d="M -20 180 Q 220 380 160 680"
-          stroke={ACCENT}
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          strokeOpacity="0.22"
-        />
-
-        {/* Reverse Crosscourt Angle (Right) */}
+        {/* Reverse Crosscourt Angle (Right Ink/Teal) */}
         <path
           d="M 1240 500 Q 940 320 820 620"
-          stroke={INK}
+          stroke={TEAL}
           strokeWidth="1"
           strokeLinecap="round"
           strokeDasharray="3 5"
-          strokeOpacity="0.12"
+          strokeOpacity="0.25"
         />
       </svg>
 
@@ -336,7 +340,7 @@ function HeroShuttleFlight() {
 }
 
 /* ── Secondary Animated Trajectory Arc ───────────────────────────────── */
-function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.5, opacity = 0.3 }) {
+function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.5, opacity = 0.35, color = TEAL }) {
   const pathRef = useRef(null);
 
   useEffect(() => {
@@ -364,7 +368,7 @@ function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.5, opaci
       <path
         ref={pathRef}
         d={d}
-        stroke={ACCENT}
+        stroke={color}
         strokeWidth={strokeWidth}
         strokeOpacity={opacity}
         strokeLinecap="round"
@@ -579,15 +583,14 @@ export default function GeometricHero({ onOpenModal }) {
         }
       `}</style>
 
-      {/* ── Background Subtle Gold Ambient Corner Washes & Radial Warmth ── */}
-      {/* Top-Left & Bottom-Right gold corner warmth */}
+      {/* ── Background Subtle Dual-Accent Ambient Corner Washes & Radial Warmth ── */}
       <div
         className="absolute inset-0 pointer-events-none select-none"
         style={{
           background: `
-            radial-gradient(ellipse 70% 55% at 50% 48%, rgba(197, 160, 89, 0.045) 0%, rgba(197, 160, 89, 0.015) 50%, transparent 80%),
-            linear-gradient(135deg, rgba(197, 160, 89, 0.035) 0%, transparent 35%),
-            linear-gradient(315deg, rgba(197, 160, 89, 0.03) 0%, transparent 35%)
+            radial-gradient(ellipse 70% 55% at 50% 48%, rgba(197, 160, 89, 0.04) 0%, rgba(43, 110, 122, 0.02) 50%, transparent 80%),
+            linear-gradient(135deg, rgba(43, 110, 122, 0.04) 0%, transparent 35%),
+            linear-gradient(315deg, rgba(197, 160, 89, 0.035) 0%, transparent 35%)
           `,
         }}
         aria-hidden="true"
@@ -608,17 +611,19 @@ export default function GeometricHero({ onOpenModal }) {
       >
         <HeroShuttleFlight />
 
-        {/* Decorative Trajectory Arcs */}
+        {/* Decorative Trajectory Arcs with Dual Accents */}
         <AtmosphericArc
           d="M 10 200 Q 220 -30 440 170"
           delay={0.6}
           opacity={0.35}
+          color={TEAL}
           className="left-[-4%] top-[10%] md:top-[14%]"
         />
         <AtmosphericArc
           d="M 440 20 Q 240 140 10 180"
           delay={0.8}
           opacity={0.3}
+          color={ACCENT}
           className="right-[-2%] bottom-[10%] md:bottom-[14%]"
         />
       </div>
@@ -642,8 +647,8 @@ export default function GeometricHero({ onOpenModal }) {
           <div
             className="inline-flex items-center gap-2.5 px-4 py-1.5"
             style={{
-              background: "rgba(10,10,10,0.02)",
-              border: "1px solid rgba(10,10,10,0.08)",
+              background: "rgba(43,110,122,0.03)",
+              border: "1px solid rgba(43,110,122,0.15)",
             }}
           >
             <span
