@@ -50,9 +50,8 @@ right, then go to **http://localhost:5173/admin** — you should see a
 login screen. Sign in with the email/password you created in Part 1,
 Step 4, and try adding a test booking.
 
-Also test that "Request An Invitation" on the main page reaches your
-Gmail via Formspree — the Claude.ai preview couldn't test this, so this
-local run is your first real chance to confirm it works.
+Also test that "Request An Invitation" on the main page creates a record in
+your Supabase `bookings` table with status `pending`.
 
 ## Part 4 — Deploy
 
@@ -85,8 +84,7 @@ project itself so it can inject the environment variables.
 ## After deploying
 
 1. Visit your live URL, submit "Request An Invitation" for real, and
-   check rcsbadminton@gmail.com (and spam folder) for the Formspree
-   notification.
+   check `/admin` or your Supabase dashboard to verify the new booking.
 2. Visit `your-live-url.com/admin`, log in, and add a real booking to
    confirm the database connection works in production too.
 
@@ -96,80 +94,6 @@ project itself so it can inject the environment variables.
   add students, set session date/time, mark confirmed/cancelled, delete.
 - You can also view/edit the raw data anytime from the Supabase dashboard
   under **Table Editor → bookings**, without needing the site at all.
-- "Request An Invitation" submissions still go to your Gmail via
-  Formspree, separate from the bookings table — that's your lead intake;
-  bookings is where confirmed sessions live.
-
-## Part 5 — Automatic confirmation emails (optional but recommended)
-
-When you mark a booking "Confirmed" in `/admin`, the site can automatically
-email that student their session details — no manual typing. This needs
-one more service (Resend, free) and one deploy step using the Supabase
-CLI (a command-line tool, separate from `npm`).
-
-### Step 1 — Create a Resend account
-
-1. Go to **resend.com**, sign up free (100 emails/day, 3,000/month free).
-2. Verify your email.
-3. In the Resend dashboard, go to **API Keys** → **Create API Key**.
-4. Name it anything, copy the key (starts with `re_...`) — you'll need
-   it in Step 3. Resend only shows it once, same as GitHub tokens.
-
-Note: until you verify your own domain in Resend (optional, later),
-emails send from `onboarding@resend.dev` — this works fine for testing
-and even for real use, it just shows Resend's domain as the sender
-instead of your own. You can add your own domain in Resend's dashboard
-later if you want `noreply@rcsbadminton.com`-style sending.
-
-### Step 2 — Install the Supabase CLI
-
-In Terminal, inside your `rcs-deploy` folder, run:
-```
-brew install supabase/tap/supabase
-```
-(If you don't have Homebrew, install it first from **brew.sh** — it'll
-give you a command to paste into Terminal.)
-
-### Step 3 — Log in and link your project
-
-```
-supabase login
-```
-This opens a browser window to authorize — approve it, return to Terminal.
-
-```
-supabase link --project-ref YOUR_PROJECT_REF
-```
-Your project ref is the random string in your Supabase project URL —
-e.g. if your URL is `https://jdczzeobdnxkjjjzezhw.supabase.co`, your
-ref is `jdczzeobdnxkjjjzezhw`.
-
-### Step 4 — Add your Resend key as a secret
-
-```
-supabase secrets set RESEND_API_KEY=re_your_actual_key_here
-```
-This keeps your Resend key safely on Supabase's servers — it's never
-exposed in your website's code, unlike the Supabase keys which are
-meant to be public.
-
-### Step 5 — Deploy the function
-
-```
-supabase functions deploy send-confirmation-email
-```
-
-### Step 6 — Test it
-
-1. Go to `your-live-url.com/admin`, log in.
-2. Add a test booking with your own real email address in the
-   "Email (optional)" field.
-3. Change its status to **Confirmed**.
-4. You should see a green note appear: "Confirmed — confirmation email
-   sent." Check that email inbox (and spam folder) for the actual email.
-5. If it says "email failed to send" instead, double check the Resend
-   API key was set correctly in Step 4 and that the function deployed
-   without errors in Step 5.
-
-From here on, every time you mark a booking Confirmed for a student who
-has an email on file, this happens automatically — no more manual typing.
+- "Request An Invitation" submissions insert directly into the Supabase
+  `bookings` table with status `pending`, appearing immediately in your
+  `/admin` schedule dashboard.

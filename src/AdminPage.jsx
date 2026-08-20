@@ -1,14 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { supabase, supabaseConfigured } from "./lib/supabaseClient.js";
-
-/* Design tokens — mirrors the main site so this doesn't feel like a
-   different product, even though it's an internal tool. */
-const INK = "#0A0A0A";
-const PAPER = "#FFFFFF";
-const MUTED = "#6B6B6B";
-const ACCENT = "#C5A059";
-const FONT_HEADING = "'Playfair Display', serif";
-const FONT_BODY = "'Inter', sans-serif";
+import { FONT_HEADING, FONT_BODY, INK, PAPER, MUTED, ACCENT } from "./lib/tokens.js";
 
 const EMPTY_FORM = {
   student_name: "",
@@ -22,15 +14,15 @@ const EMPTY_FORM = {
 };
 
 function GhostButton({ children, onClick, type = "button", disabled = false, danger = false }) {
-  const [hover, setHover] = useState(false);
-  const color = danger && hover ? "#B3413E" : hover && !disabled ? ACCENT : INK;
+  const hoverClass = danger
+    ? "hover:border-[#B3413E] hover:text-[#B3413E]"
+    : "hover:border-[#C5A059] hover:text-[#C5A059]";
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className={`inline-flex items-center justify-center border border-[#0A0A0A] text-[#0A0A0A] bg-transparent ${disabled ? "opacity-50 cursor-not-allowed" : `cursor-pointer ${hoverClass}`} transition-all duration-200`}
       style={{
         fontFamily: FONT_BODY,
         fontWeight: 500,
@@ -38,12 +30,6 @@ function GhostButton({ children, onClick, type = "button", disabled = false, dan
         textTransform: "uppercase",
         letterSpacing: "0.2em",
         padding: "10px 20px",
-        background: "transparent",
-        border: `1px solid ${color}`,
-        color,
-        opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? "not-allowed" : "pointer",
-        transition: "all 0.2s",
       }}
     >
       {children}
@@ -279,43 +265,14 @@ function BookingForm({ onSaved }) {
 function BookingRow({ booking, onChanged }) {
   const [updating, setUpdating] = useState(false);
   const [rowError, setRowError] = useState("");
-  const [emailNote, setEmailNote] = useState("");
 
   const updateStatus = async (status) => {
     setUpdating(true);
     setRowError("");
-    setEmailNote("");
-    const wasAlreadyConfirmed = booking.status === "confirmed";
-
     const { error } = await supabase.from("bookings").update({ status }).eq("id", booking.id);
-
-    if (error) {
-      setUpdating(false);
-      setRowError(error.message);
-      return;
-    }
-
-    // Only fire the confirmation email on a genuine pending/cancelled -> confirmed
-    // transition, never on a re-save, so re-confirming doesn't spam the applicant.
-    if (status === "confirmed" && !wasAlreadyConfirmed) {
-      if (!booking.student_email) {
-        setEmailNote("Confirmed — no email on file, so no confirmation was sent.");
-      } else {
-        const { error: fnError } = await supabase.functions.invoke("send-confirmation-email", {
-          body: {
-            student_name: booking.student_name,
-            student_email: booking.student_email,
-            membership_tier: booking.membership_tier,
-            session_date: booking.session_date,
-            session_time: booking.session_time?.slice(0, 5),
-          },
-        });
-        setEmailNote(fnError ? `Confirmed — but the email failed to send (${fnError.message}).` : "Confirmed — confirmation email sent.");
-      }
-    }
-
     setUpdating(false);
-    onChanged();
+    if (error) setRowError(error.message);
+    else onChanged();
   };
 
   const remove = async () => {
@@ -351,7 +308,6 @@ function BookingRow({ booking, onChanged }) {
           <option value="cancelled">Cancelled</option>
         </select>
         {rowError && <div style={{ color: "#B3413E", fontSize: "11px", marginTop: "4px" }}>{rowError}</div>}
-        {emailNote && <div style={{ color: emailNote.includes("failed") ? "#B3413E" : "#3A7D44", fontSize: "11px", marginTop: "4px" }}>{emailNote}</div>}
       </td>
       <td style={{ ...cellStyle, color: MUTED, fontSize: "12px" }}>{booking.notes}</td>
       <td style={cellStyle}>

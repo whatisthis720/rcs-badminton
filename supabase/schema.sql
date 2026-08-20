@@ -14,9 +14,9 @@ create table bookings (
   created_at timestamptz not null default now()
 );
 
--- Row Level Security: locked down by default.
--- Only Rc (the one admin account, identified by email) can read/write bookings.
--- The public website never talks to this table directly — only the admin page does.
+-- Row Level Security:
+-- Admin (identified by email) has full access for all operations.
+-- Public website submits membership applications with status 'pending' (insert-only).
 alter table bookings enable row level security;
 
 create policy "Admin full access"
@@ -24,6 +24,11 @@ create policy "Admin full access"
   for all
   using (auth.jwt() ->> 'email' = 'rcsbadminton@gmail.com')
   with check (auth.jwt() ->> 'email' = 'rcsbadminton@gmail.com');
+
+create policy "Public insert access"
+  on bookings
+  for insert
+  with check (true);
 
 -- Helpful index for the admin calendar view, sorted by upcoming sessions
 create index bookings_session_date_idx on bookings (session_date, session_time);
