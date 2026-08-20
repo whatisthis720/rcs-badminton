@@ -2,7 +2,7 @@
 /* GeometricHero — sport-specific hero with court lines & shuttle trails */
 /* ────────────────────────────────────────────────────────────────────── */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FONT_HEADING, FONT_BODY, INK, ACCENT } from "../lib/tokens.js";
 import { FadeIn, GhostButton } from "./ui.jsx";
 
@@ -57,15 +57,162 @@ function ShuttleTrail({ d, delay = 0, className = "", width = 500, height = 260,
   );
 }
 
+/* ── Animated gold geometric accent line ──────────────────────────────── */
+function AccentDrawLine({ delay = 0.95 }) {
+  const pathRef = useRef(null);
+
+  useEffect(() => {
+    const el = pathRef.current;
+    if (!el) return;
+    const length = el.getTotalLength();
+    el.style.strokeDasharray = `${length}`;
+    el.style.strokeDashoffset = `${length}`;
+    const t = setTimeout(() => {
+      el.style.transition = "stroke-dashoffset 1400ms cubic-bezier(0.16, 1, 0.3, 1)";
+      el.style.strokeDashoffset = "0";
+    }, delay * 1000);
+    return () => clearTimeout(t);
+  }, [delay]);
+
+  return (
+    <div className="flex justify-center items-center my-4 pointer-events-none">
+      <svg width="120" height="2" viewBox="0 0 120 2" fill="none" className="overflow-visible">
+        <path
+          ref={pathRef}
+          d="M0 1 L120 1"
+          stroke={ACCENT}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
+/* ── Magnetic CTA Button Wrapper ─────────────────────────────────────── */
+function MagneticButton({ children, onClick }) {
+  const buttonRef = useRef(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = useCallback((e) => {
+    const el = buttonRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const deltaX = e.clientX - centerX;
+    const deltaY = e.clientY - centerY;
+    // Restrained pull (max ~8-10px)
+    setOffset({
+      x: deltaX * 0.2,
+      y: deltaY * 0.2,
+    });
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    setOffset({ x: 0, y: 0 });
+  }, []);
+
+  return (
+    <div
+      ref={buttonRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="inline-block"
+      style={{
+        transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
+        transition: isHovered
+          ? "transform 180ms cubic-bezier(0.25, 1, 0.5, 1)"
+          : "transform 500ms cubic-bezier(0.25, 1, 0.5, 1)",
+        willChange: "transform",
+      }}
+    >
+      <GhostButton onClick={onClick}>{children}</GhostButton>
+    </div>
+  );
+}
+
 export default function GeometricHero({ onOpenModal }) {
+  const heroRef = useRef(null);
+  const courtLayerRef = useRef(null);
+  const trailsLayerRef = useRef(null);
+  const contentLayerRef = useRef(null);
+
+  // Parallax lerp state
+  const targetPos = useRef({ x: 0, y: 0 });
+  const currentPos = useRef({ x: 0, y: 0 });
+  const rafId = useRef(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const loop = () => {
+      if (!active) return;
+      // Smooth lerp easing factor 0.055
+      currentPos.current.x += (targetPos.current.x - currentPos.current.x) * 0.055;
+      currentPos.current.y += (targetPos.current.y - currentPos.current.y) * 0.055;
+
+      const cx = currentPos.current.x;
+      const cy = currentPos.current.y;
+
+      if (courtLayerRef.current) {
+        courtLayerRef.current.style.transform = `translate3d(${(cx * -10).toFixed(2)}px, ${(cy * -10).toFixed(2)}px, 0)`;
+      }
+      if (trailsLayerRef.current) {
+        trailsLayerRef.current.style.transform = `translate3d(${(cx * 16).toFixed(2)}px, ${(cy * 16).toFixed(2)}px, 0)`;
+      }
+      if (contentLayerRef.current) {
+        contentLayerRef.current.style.transform = `translate3d(${(cx * 6).toFixed(2)}px, ${(cy * 6).toFixed(2)}px, 0)`;
+      }
+
+      rafId.current = requestAnimationFrame(loop);
+    };
+
+    rafId.current = requestAnimationFrame(loop);
+
+    return () => {
+      active = false;
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, []);
+
+  const handleHeroMouseMove = useCallback((e) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    targetPos.current = {
+      x: Math.max(-1, Math.min(1, x)),
+      y: Math.max(-1, Math.min(1, y)),
+    };
+  }, []);
+
+  const handleHeroMouseLeave = useCallback(() => {
+    targetPos.current = { x: 0, y: 0 };
+  }, []);
+
   return (
     <section
       id="top"
+      ref={heroRef}
+      onMouseMove={handleHeroMouseMove}
+      onMouseLeave={handleHeroMouseLeave}
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white"
     >
-      <CourtLines />
+      {/* Background layer: court lines with inverse parallax */}
+      <div ref={courtLayerRef} className="absolute inset-0 pointer-events-none will-change-transform">
+        <CourtLines />
+      </div>
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Mid layer: floating shuttle trails with positive parallax */}
+      <div ref={trailsLayerRef} className="absolute inset-0 overflow-hidden pointer-events-none will-change-transform">
         <ShuttleTrail
           delay={0.35}
           width={560}
@@ -93,7 +240,8 @@ export default function GeometricHero({ onOpenModal }) {
         />
       </div>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
+      {/* Foreground layer: hero content with gentle foreground parallax */}
+      <div ref={contentLayerRef} className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center will-change-transform">
         <FadeIn delay={500}>
           <div
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-10"
@@ -111,7 +259,7 @@ export default function GeometricHero({ onOpenModal }) {
 
         <FadeIn delay={700}>
           <h1
-            className="text-5xl sm:text-7xl md:text-8xl leading-[1.12] mb-8"
+            className="text-5xl sm:text-7xl md:text-8xl leading-[1.12] mb-4"
             style={{ fontFamily: FONT_HEADING, fontWeight: 800, letterSpacing: "-0.02em" }}
           >
             <span className="block" style={{ color: INK }}>Racquets Cult</span>
@@ -124,7 +272,11 @@ export default function GeometricHero({ onOpenModal }) {
           </h1>
         </FadeIn>
 
-        <FadeIn delay={900}>
+        <FadeIn delay={850}>
+          <AccentDrawLine delay={0.95} />
+        </FadeIn>
+
+        <FadeIn delay={950}>
           <p
             className="text-base sm:text-lg mb-10 max-w-xl mx-auto"
             style={{ fontFamily: FONT_BODY, fontWeight: 300, lineHeight: 1.8, color: "rgba(10,10,10,0.5)" }}
@@ -135,7 +287,9 @@ export default function GeometricHero({ onOpenModal }) {
         </FadeIn>
 
         <FadeIn delay={1100}>
-          <GhostButton onClick={onOpenModal}>Request An Invitation</GhostButton>
+          <MagneticButton onClick={onOpenModal}>
+            Request An Invitation
+          </MagneticButton>
         </FadeIn>
       </div>
 
