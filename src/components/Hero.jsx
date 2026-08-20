@@ -14,7 +14,7 @@ function CourtLines() {
       className="absolute inset-0 w-full h-full pointer-events-none select-none"
       viewBox="0 0 1200 800"
       preserveAspectRatio="xMidYMid slice"
-      style={{ opacity: 0.07 }}
+      style={{ opacity: 0.075 }}
       aria-hidden="true"
     >
       {/* Outer Doubles Boundary */}
@@ -24,7 +24,7 @@ function CourtLines() {
       <line x1="600" y1="90" x2="600" y2="710" stroke={INK} strokeWidth="1" />
 
       {/* Net Line with Gold Accent */}
-      <line x1="140" y1="400" x2="1060" y2="400" stroke={ACCENT} strokeWidth="2" strokeDasharray="6 3" strokeOpacity="0.85" />
+      <line x1="140" y1="400" x2="1060" y2="400" stroke={ACCENT} strokeWidth="2" strokeDasharray="6 3" strokeOpacity="0.9" />
 
       {/* Short Service Lines */}
       <line x1="140" y1="230" x2="1060" y2="230" stroke={INK} strokeWidth="1" />
@@ -39,11 +39,11 @@ function CourtLines() {
       <line x1="140" y1="670" x2="1060" y2="670" stroke={INK} strokeWidth="0.75" strokeDasharray="4 4" />
 
       {/* Precision Court Corner Markers */}
-      <circle cx="140" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.7" />
-      <circle cx="1060" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.7" />
-      <circle cx="140" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.7" />
-      <circle cx="1060" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.7" />
-      <circle cx="600" cy="400" r="4.5" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="140" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="1060" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="140" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="1060" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.75" />
+      <circle cx="600" cy="400" r="4.5" fill={ACCENT} fillOpacity="0.85" />
     </svg>
   );
 }
@@ -164,7 +164,7 @@ function HeroShuttleFlight() {
           strokeLinecap="round"
           strokeDasharray="6 4"
           className="transition-opacity duration-1000"
-          style={{ opacity: flightPhase === "settled" ? 0.38 : 0.7 }}
+          style={{ opacity: flightPhase === "settled" ? 0.38 : 0.75 }}
         />
 
         {/* Ambient Subtle Secondary Trajectory Arc */}
@@ -241,13 +241,13 @@ function AtmosphericArc({ d, delay = 0, className = "", strokeWidth = 1.25, opac
 function GoldAccentReveal() {
   return (
     <div
-      className="flex items-center justify-center gap-3 my-5 pointer-events-none select-none"
+      className="flex items-center justify-center gap-3 my-4 sm:my-5 pointer-events-none select-none"
       style={{
         animation: "heroAccentLineReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both",
       }}
     >
       <div
-        className="h-px w-16 sm:w-20"
+        className="h-px w-14 sm:w-20"
         style={{
           background: `linear-gradient(90deg, transparent, ${ACCENT})`,
           opacity: 0.85,
@@ -260,7 +260,7 @@ function GoldAccentReveal() {
         }}
       />
       <div
-        className="h-px w-16 sm:w-20"
+        className="h-px w-14 sm:w-20"
         style={{
           background: `linear-gradient(90deg, ${ACCENT}, transparent)`,
           opacity: 0.85,
@@ -426,7 +426,7 @@ export default function GeometricHero({ onOpenModal }) {
     <section
       id="top"
       ref={heroRef}
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white selection:bg-[#C5A059] selection:text-[#0A0A0A]"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white pt-24 pb-16 selection:bg-[#C5A059] selection:text-[#0A0A0A]"
     >
       <style>{`
         @keyframes heroFadeUp {
@@ -498,7 +498,7 @@ export default function GeometricHero({ onOpenModal }) {
       >
         {/* Step 1: Kicker Reveal */}
         <div
-          className="inline-block mb-8 md:mb-10"
+          className="inline-block mb-6 sm:mb-8"
           style={{
             animation: "heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both",
           }}
@@ -529,7 +529,7 @@ export default function GeometricHero({ onOpenModal }) {
 
         {/* Step 2 & 3: Headline Staggered Reveal */}
         <h1
-          className="text-5xl sm:text-7xl md:text-8xl leading-[1.1] mb-3"
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] leading-[1.08] mb-2"
           style={{
             fontFamily: FONT_HEADING,
             fontWeight: 800,
@@ -537,18 +537,16 @@ export default function GeometricHero({ onOpenModal }) {
           }}
         >
           <span
-            className="block"
+            className="block text-[#0A0A0A]"
             style={{
-              color: INK,
               animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both",
             }}
           >
             Racquets Cult
           </span>
           <span
-            className="block pb-2"
+            className="block text-[#0A0A0A] pb-1"
             style={{
-              color: INK,
               animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both",
             }}
           >
@@ -561,12 +559,12 @@ export default function GeometricHero({ onOpenModal }) {
 
         {/* Step 5: Subtext Reveal */}
         <p
-          className="text-base sm:text-lg mb-10 max-w-xl mx-auto"
+          className="text-base sm:text-lg mb-8 max-w-xl mx-auto"
           style={{
             fontFamily: FONT_BODY,
             fontWeight: 300,
             lineHeight: 1.8,
-            color: "rgba(10,10,10,0.55)",
+            color: "rgba(10,10,10,0.6)",
             animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both",
           }}
         >
@@ -588,7 +586,7 @@ export default function GeometricHero({ onOpenModal }) {
 
       {/* Bottom Subtle Gradient Fade to Next Section */}
       <div
-        className="absolute inset-x-0 bottom-0 h-28 pointer-events-none select-none"
+        className="absolute inset-x-0 bottom-0 h-24 pointer-events-none select-none"
         style={{
           background: "linear-gradient(to top, #FFFFFF, rgba(255,255,255,0))",
         }}
