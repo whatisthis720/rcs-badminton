@@ -14,7 +14,7 @@ function CourtLines() {
       className="absolute inset-0 w-full h-full pointer-events-none select-none"
       viewBox="0 0 1200 800"
       preserveAspectRatio="xMidYMid slice"
-      style={{ opacity: 0.075 }}
+      style={{ opacity: 0.08 }}
       aria-hidden="true"
     >
       {/* Outer Doubles Boundary */}
@@ -39,11 +39,11 @@ function CourtLines() {
       <line x1="140" y1="670" x2="1060" y2="670" stroke={INK} strokeWidth="0.75" strokeDasharray="4 4" />
 
       {/* Precision Court Corner Markers */}
-      <circle cx="140" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="1060" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="140" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="1060" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.75" />
-      <circle cx="600" cy="400" r="4.5" fill={ACCENT} fillOpacity="0.85" />
+      <circle cx="140" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="1060" cy="90" r="3.5" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="140" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="1060" cy="710" r="3.5" fill={ACCENT} fillOpacity="0.8" />
+      <circle cx="600" cy="400" r="4.5" fill={ACCENT} fillOpacity="0.9" />
     </svg>
   );
 }
@@ -102,7 +102,7 @@ function HeroShuttleFlight() {
     let startTime = null;
     let animId = null;
     const duration = 2000;
-    const delay = 250;
+    const delay = 200;
 
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
@@ -118,11 +118,9 @@ function HeroShuttleFlight() {
       const rawProgress = Math.min(1, elapsed / duration);
       const easedProgress = easeOutCubic(rawProgress);
 
-      // 1. Draw trajectory arc in sync
       const currentOffset = length * (1 - easedProgress);
       pathEl.style.strokeDashoffset = `${currentOffset}`;
 
-      // 2. Position and rotate shuttlecock along path
       const currentDist = easedProgress * length;
       const point = pathEl.getPointAtLength(currentDist);
       const nextPoint = pathEl.getPointAtLength(Math.min(length, currentDist + 2));
@@ -164,7 +162,7 @@ function HeroShuttleFlight() {
           strokeLinecap="round"
           strokeDasharray="6 4"
           className="transition-opacity duration-1000"
-          style={{ opacity: flightPhase === "settled" ? 0.38 : 0.75 }}
+          style={{ opacity: flightPhase === "settled" ? 0.4 : 0.8 }}
         />
 
         {/* Ambient Subtle Secondary Trajectory Arc */}
@@ -174,7 +172,7 @@ function HeroShuttleFlight() {
           strokeWidth="1"
           strokeLinecap="round"
           strokeDasharray="4 6"
-          strokeOpacity="0.2"
+          strokeOpacity="0.25"
         />
       </svg>
 
@@ -183,8 +181,8 @@ function HeroShuttleFlight() {
         ref={shuttleRef}
         className="absolute top-0 left-0 will-change-transform"
         style={{
-          opacity: 0,
-          transform: "translate3d(-50px, 480px, 0)",
+          opacity: 1,
+          transform: "translate3d(1144px, 284px, 0) rotate(18deg)",
         }}
       >
         <div
@@ -243,7 +241,7 @@ function GoldAccentReveal() {
     <div
       className="flex items-center justify-center gap-3 my-4 sm:my-5 pointer-events-none select-none"
       style={{
-        animation: "heroAccentLineReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both",
+        animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.75s backwards",
       }}
     >
       <div
@@ -339,7 +337,7 @@ export default function GeometricHero({ onOpenModal }) {
   const rafId = useRef(null);
 
   // Scroll exit state
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
 
   // Parallax requestAnimationFrame Loop
   useEffect(() => {
@@ -406,47 +404,34 @@ export default function GeometricHero({ onOpenModal }) {
   // Scroll-Responsive Exit Interaction
   useEffect(() => {
     const handleScroll = () => {
-      if (!heroRef.current) return;
-      const rect = heroRef.current.getBoundingClientRect();
-      const heroHeight = rect.height || window.innerHeight;
-      const scrollY = Math.max(0, -rect.top);
-      const progress = Math.min(1, Math.max(0, scrollY / (heroHeight * 0.75)));
-      setScrollProgress(progress);
+      setScrollY(window.scrollY || 0);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const exitOpacity = Math.max(0, 1 - scrollProgress * 1.35);
-  const exitScale = 1 - scrollProgress * 0.05;
-  const exitTranslateY = -scrollProgress * 50;
+  const heroH = typeof window !== "undefined" ? window.innerHeight : 800;
+  const progress = Math.min(1, Math.max(0, scrollY / (heroH * 0.75)));
+  const exitOpacity = Math.max(0, 1 - progress * 1.35);
+  const exitScale = 1 - progress * 0.05;
+  const exitTranslateY = -progress * 50;
 
   return (
     <section
       id="top"
       ref={heroRef}
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white pt-24 pb-16 selection:bg-[#C5A059] selection:text-[#0A0A0A]"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white pt-20 pb-12 selection:bg-[#C5A059] selection:text-[#0A0A0A]"
     >
       <style>{`
         @keyframes heroFadeUp {
-          from {
+          0% {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(18px);
           }
-          to {
+          100% {
             opacity: 1;
             transform: translateY(0);
-          }
-        }
-        @keyframes heroAccentLineReveal {
-          from {
-            opacity: 0;
-            transform: scaleX(0);
-          }
-          to {
-            opacity: 1;
-            transform: scaleX(1);
           }
         }
         @keyframes heroShuttleSway {
@@ -493,14 +478,13 @@ export default function GeometricHero({ onOpenModal }) {
         style={{
           opacity: exitOpacity,
           transform: `translate3d(0, ${exitTranslateY}px, 0) scale(${exitScale})`,
-          transition: "opacity 120ms linear, transform 120ms linear",
         }}
       >
         {/* Step 1: Kicker Reveal */}
         <div
           className="inline-block mb-6 sm:mb-8"
           style={{
-            animation: "heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both",
+            animation: "heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards",
           }}
         >
           <div
@@ -529,7 +513,7 @@ export default function GeometricHero({ onOpenModal }) {
 
         {/* Step 2 & 3: Headline Staggered Reveal */}
         <h1
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] leading-[1.08] mb-2"
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-[4.75rem] leading-[1.08] mb-2"
           style={{
             fontFamily: FONT_HEADING,
             fontWeight: 800,
@@ -539,7 +523,7 @@ export default function GeometricHero({ onOpenModal }) {
           <span
             className="block text-[#0A0A0A]"
             style={{
-              animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both",
+              animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s backwards",
             }}
           >
             Racquets Cult
@@ -547,7 +531,7 @@ export default function GeometricHero({ onOpenModal }) {
           <span
             className="block text-[#0A0A0A] pb-1"
             style={{
-              animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both",
+              animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.55s backwards",
             }}
           >
             Private Coaching
@@ -565,7 +549,7 @@ export default function GeometricHero({ onOpenModal }) {
             fontWeight: 300,
             lineHeight: 1.8,
             color: "rgba(10,10,10,0.6)",
-            animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both",
+            animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.95s backwards",
           }}
         >
           Rc's is a private badminton coaching practice for players who
@@ -575,7 +559,7 @@ export default function GeometricHero({ onOpenModal }) {
         {/* Step 6: Magnetic CTA Button Reveal */}
         <div
           style={{
-            animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.15s both",
+            animation: "heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.15s backwards",
           }}
         >
           <MagneticCTAButton onClick={onOpenModal}>
