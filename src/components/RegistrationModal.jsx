@@ -1,10 +1,11 @@
 /* ────────────────────────────────────────────────────────────────────── */
-/* Registration Modal — accessible, focus-trapped, Supabase-connected   */
+/* Registration Modal — Kinetic Athletic Redesign                         */
+/* Accessible, focus-trapped, Supabase-connected                          */
 /* ────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import { FONT_HEADING, FONT_BODY, INK, MUTED, ACCENT } from "../lib/tokens.js";
+import { FONT_HEADING, FONT_BODY, PAPER, MUTED_DARK, VOLT, STEEL, CHARCOAL } from "../lib/tokens.js";
 import { TIERS } from "../lib/data.js";
 import { supabase } from "../lib/supabaseClient.js";
 import { GhostButton, Field } from "./ui.jsx";
@@ -36,10 +37,8 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
   useEffect(() => {
     if (!open) return;
 
-    // Save trigger element for focus restoration on close
     lastActiveElementRef.current = document.activeElement;
 
-    // Initial focus on first interactive element inside modal
     const focusTimer = setTimeout(() => {
       if (modalRef.current) {
         const firstFocusable = modalRef.current.querySelector(
@@ -51,7 +50,6 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
       }
     }, 50);
 
-    // Keyboard handling: Escape to close, Tab / Shift+Tab to trap focus
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -150,7 +148,7 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       <div
         onClick={onClose}
-        className="absolute inset-0 bg-[#0A0A0A]/70 transition-opacity duration-500"
+        className="absolute inset-0 bg-[#0B0F14]/85 backdrop-blur-sm transition-opacity duration-400"
         style={{ opacity: mounted ? 1 : 0 }}
       />
 
@@ -159,41 +157,45 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative w-full max-w-md bg-white"
+        className="relative w-full max-w-md bg-[#0E131A] text-white"
         style={{
-          border: `1px solid ${INK}`,
+          border: "1px solid rgba(200, 255, 61, 0.35)",
+          boxShadow: "0 0 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(200, 255, 61, 0.15)",
           opacity: mounted ? 1 : 0,
-          transition: "opacity 500ms ease-out",
+          transform: mounted ? "scale(1)" : "scale(0.96)",
+          transition: "opacity 300ms ease-out, transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
         <button
           onClick={onClose}
-          aria-label="Close modal"
-          className="absolute top-6 right-6 hover:opacity-60 transition-opacity duration-300"
-          style={{ color: INK }}
+          aria-label="Close"
+          className="absolute top-6 right-6 p-2 text-[#B8BEC7] hover:text-[#C8FF3D] transition-colors"
         >
-          <X size={18} strokeWidth={1.25} />
+          <X size={20} strokeWidth={1.5} />
         </button>
 
-        <div className="px-8 py-12 sm:px-12 sm:py-16">
+        <div className="px-8 py-10 sm:px-10 sm:py-12">
           {submitted ? (
-            <div className="py-10 text-center" role="status" aria-live="polite">
+            <div className="py-8 text-center" role="status" aria-live="polite">
+              <div className="w-12 h-12 rounded-full bg-[#C8FF3D]/10 border border-[#C8FF3D] text-[#C8FF3D] flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(200,255,61,0.3)]">
+                ✓
+              </div>
               <p
-                className="text-[11px] uppercase tracking-[0.3em] mb-6"
-                style={{ fontFamily: FONT_BODY, color: ACCENT }}
+                className="text-xs uppercase tracking-[0.3em] font-bold mb-3 text-[#C8FF3D]"
+                style={{ fontFamily: FONT_BODY }}
               >
                 Application Received
               </p>
               <h3
                 id="modal-title"
-                className="text-3xl mb-5"
-                style={{ fontFamily: FONT_HEADING, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}
+                className="text-2xl sm:text-3xl mb-4 font-extrabold text-white tracking-tight"
+                style={{ fontFamily: FONT_HEADING }}
               >
                 You're on the list.
               </h3>
               <p
-                className="text-base"
-                style={{ fontFamily: FONT_BODY, fontWeight: 300, lineHeight: 1.8, color: MUTED }}
+                className="text-sm font-normal text-[#B8BEC7] leading-relaxed"
+                style={{ fontFamily: FONT_BODY }}
               >
                 Rc reviews every application personally. Expect a reply within
                 72 hours if a seat is available for your standing.
@@ -201,27 +203,31 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
             </div>
           ) : (
             <>
-              <p
-                className="text-[11px] uppercase tracking-[0.3em] mb-5"
-                style={{ fontFamily: FONT_BODY, color: ACCENT }}
-              >
-                Request An Invitation
-              </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C8FF3D]/10 border border-[#C8FF3D]/30 mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C8FF3D] shadow-[0_0_6px_#C8FF3D]" />
+                <p
+                  className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#C8FF3D]"
+                  style={{ fontFamily: FONT_BODY }}
+                >
+                  Request An Invitation
+                </p>
+              </div>
+
               <h3
                 id="modal-title"
-                className="text-3xl sm:text-4xl mb-4"
-                style={{ fontFamily: FONT_HEADING, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}
+                className="text-2xl sm:text-3xl mb-2 font-black text-white tracking-tight"
+                style={{ fontFamily: FONT_HEADING }}
               >
                 Apply for membership
               </h3>
               <p
-                className="text-base mb-10"
-                style={{ fontFamily: FONT_BODY, fontWeight: 300, lineHeight: 1.8, color: MUTED }}
+                className="text-xs text-[#B8BEC7] font-normal leading-relaxed mb-8"
+                style={{ fontFamily: FONT_BODY }}
               >
                 Seats are limited each season. Tell us a little about you.
               </p>
 
-              <form onSubmit={handleSubmit} noValidate className="space-y-6">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <Field
                   id="modal-name"
                   label="Full name"
@@ -265,8 +271,8 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
                 <div>
                   <label
                     htmlFor="modal-tier"
-                    className="block text-[11px] uppercase tracking-[0.2em] mb-2"
-                    style={{ fontFamily: FONT_BODY, color: MUTED }}
+                    className="block text-[11px] uppercase tracking-[0.2em] mb-2 font-medium text-[#B8BEC7]"
+                    style={{ fontFamily: FONT_BODY }}
                   >
                     Preferred Standing
                   </label>
@@ -279,23 +285,26 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
                     }}
                     aria-invalid={!!fieldErrors.tier}
                     aria-describedby={fieldErrors.tier ? "modal-tier-error" : undefined}
-                    className="w-full bg-transparent text-sm py-2 focus:outline-none appearance-none"
-                    style={{ fontFamily: FONT_BODY, color: INK, borderBottom: `1px solid ${fieldErrors.tier ? "#B3413E" : INK}` }}
+                    className="w-full bg-[#131922] text-sm text-white px-4 py-3 rounded-none focus:outline-none transition-all duration-200 border border-white/10 appearance-none"
+                    style={{
+                      fontFamily: FONT_BODY,
+                      border: `1px solid ${fieldErrors.tier ? "#FF4B4B" : "rgba(255, 255, 255, 0.12)"}`,
+                    }}
                   >
                     <option value="" disabled>Select a tier</option>
                     {TIERS.map((t) => (
-                      <option key={t.name} value={t.name}>{t.name}</option>
+                      <option key={t.name} value={t.name} className="bg-[#0E131A] text-white">{t.name}</option>
                     ))}
                   </select>
                   {fieldErrors.tier && (
-                    <p id="modal-tier-error" className="text-[11px] mt-1.5" style={{ fontFamily: FONT_BODY, color: "#B3413E" }}>
+                    <p id="modal-tier-error" className="text-[11px] mt-1.5 font-medium text-[#FF4B4B]" style={{ fontFamily: FONT_BODY }}>
                       {fieldErrors.tier}
                     </p>
                   )}
                 </div>
 
-                <div className="pt-6">
-                  <GhostButton className="w-full justify-center" disabled={submitting}>
+                <div className="pt-4">
+                  <GhostButton className="w-full justify-center !py-4 font-bold text-sm" disabled={submitting}>
                     {submitting ? "Sending…" : "Submit Application"}
                   </GhostButton>
                 </div>
@@ -303,8 +312,8 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
                 {error && (
                   <p
                     role="alert"
-                    className="text-center text-[11px] uppercase tracking-[0.15em] pt-1"
-                    style={{ fontFamily: FONT_BODY, color: "#B3413E" }}
+                    className="text-center text-[11px] uppercase tracking-[0.15em] pt-1 font-semibold text-[#FF4B4B]"
+                    style={{ fontFamily: FONT_BODY }}
                   >
                     Something went wrong — please try again, or email
                     rcsbadminton@gmail.com directly.
@@ -312,8 +321,8 @@ export default function RegistrationModal({ open, onClose, presetTier }) {
                 )}
 
                 <p
-                  className="text-center text-[11px] uppercase tracking-[0.15em] pt-2"
-                  style={{ fontFamily: FONT_BODY, color: "#A3A3A3" }}
+                  className="text-center text-[11px] uppercase tracking-[0.15em] pt-2 text-[#64748B]"
+                  style={{ fontFamily: FONT_BODY }}
                 >
                   Applications reviewed weekly · Seats limited per season
                 </p>

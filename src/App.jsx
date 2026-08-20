@@ -1,43 +1,6 @@
 /**
  * Rc's — Racquets Cult
- * Ultra-Minimalist Editorial landing page for a private badminton coaching practice.
- *
- * ─────────────────────────────────────────────────────────────────────────
- * TYPOGRAPHY — exactly two families, no exceptions
- * ─────────────────────────────────────────────────────────────────────────
- *   Headings → "Playfair Display", weight 700–800, letter-spacing -0.02em
- *   Body     → "Inter", 16px, line-height 1.8
- *
- * ─────────────────────────────────────────────────────────────────────────
- * A NOTE ON ANIMATION
- * ─────────────────────────────────────────────────────────────────────────
- * The brief asks for framer-motion. This file runs inside the Claude.ai
- * artifact sandbox, which ships a fixed set of libraries and does NOT
- * include framer-motion. To keep this actually runnable here, the fade-in
- * is implemented with native React + IntersectionObserver + a CSS opacity
- * transition — tuned to the same spec: 1.2s, opacity only, no slide, no
- * bounce, no easing tricks.
- *
- * If you're building this in your own project (Next.js/Vite) where
- * framer-motion IS installed, swap the <FadeIn> wrapper below for this:
- *
- *   import { motion } from "framer-motion";
- *   <motion.div
- *     initial={{ opacity: 0 }}
- *     whileInView={{ opacity: 1 }}
- *     viewport={{ once: true, amount: 0.2 }}
- *     transition={{ duration: 1.2, ease: "easeOut" }}
- *   >
- *     {children}
- *   </motion.div>
- *
- * ─────────────────────────────────────────────────────────────────────────
- * IMAGE PLACEHOLDERS
- * ─────────────────────────────────────────────────────────────────────────
- * Marked with {/* REPLACE IMAGE *\/} comments. Pulled from Picsum, pushed to
- * true monochrome (grayscale + higher contrast) to match the strict palette.
- * Swap for real, high-resolution photography — full-bleed, zero rounded
- * corners, sharply cropped to the grid, as specified.
+ * Kinetic Athletic Redesign: Charcoal (#0B0F14), Volt (#C8FF3D), Steel Blue (#1E88E5)
  */
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -67,17 +30,19 @@ export default function App() {
   }, [modalOpen]);
 
   return (
-    <div className="bg-white min-h-screen relative">
+    <div className="bg-[#0B0F14] text-white min-h-screen relative selection:bg-[#C8FF3D] selection:text-[#0B0F14]">
       <style>{`
-        html { scroll-behavior: smooth; }
+        html {
+          scroll-behavior: smooth;
+          background-color: #0B0F14;
+        }
         @keyframes shapeFloat {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(15px); }
         }
-        ::selection { background: #C5A059; color: #0A0A0A; }
         * { border-radius: 0 !important; }
         a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
-          outline: 1px solid #C5A059;
+          outline: 1.5px solid #C8FF3D;
           outline-offset: 3px;
         }
       `}</style>

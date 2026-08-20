@@ -1,9 +1,10 @@
 /* ────────────────────────────────────────────────────────────────────── */
 /* Shared UI primitives — FadeIn, GhostButton, Mark, Field               */
+/* Kinetic Athletic Redesign — Charcoal, Volt Green, Steel Blue          */
 /* ────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useRef, useState } from "react";
-import { FONT_HEADING, FONT_BODY, INK, PAPER, MUTED, ACCENT } from "../lib/tokens.js";
+import { FONT_HEADING, FONT_BODY, CHARCOAL, PAPER, MUTED_DARK, VOLT, STEEL } from "../lib/tokens.js";
 
 /* ── useInView ───────────────────────────────────────────────────────── */
 export function useInView(threshold = 0.15) {
@@ -29,16 +30,27 @@ export function useInView(threshold = 0.15) {
   return [ref, inView];
 }
 
-/* ── FadeIn — pure opacity, 1.2s, no translate/slide/bounce ──────── */
-export function FadeIn({ children, delay = 0, className = "" }) {
+/* ── FadeIn — energetic entrance with subtle slide/scale support ────── */
+export function FadeIn({ children, delay = 0, className = "", direction = "up" }) {
   const [ref, inView] = useInView();
+  
+  const getTransform = () => {
+    if (inView) return "translate3d(0, 0, 0) scale(1)";
+    if (direction === "up") return "translate3d(0, 24px, 0) scale(0.98)";
+    if (direction === "left") return "translate3d(-24px, 0, 0) scale(0.98)";
+    if (direction === "right") return "translate3d(24px, 0, 0) scale(0.98)";
+    return "translate3d(0, 0, 0) scale(0.96)";
+  };
+
   return (
     <div
       ref={ref}
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transition: `opacity 1200ms ease-out ${delay}ms`,
+        transform: getTransform(),
+        transition: `opacity 800ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 800ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        willChange: "opacity, transform",
       }}
     >
       {children}
@@ -46,19 +58,20 @@ export function FadeIn({ children, delay = 0, className = "" }) {
   );
 }
 
-/* ── Ghost button — transparent, 1px border, uppercase, wide tracking */
-/* Gold appears only on hover, as an outline/text shift — never a fill */
-export function GhostButton({ children, onClick, className = "", dark = false, disabled = false }) {
-  const baseClass = dark ? "border-white text-white" : "border-[#0A0A0A] text-[#0A0A0A]";
-  const hoverClass = disabled ? "" : "hover:border-[#C5A059] hover:text-[#C5A059]";
+/* ── Ghost button — transparent background, 1px border, wide tracking ─ */
+/* Kinetic Athletic Volt hover effect with crisp neon highlight */
+export function GhostButton({ children, onClick, className = "", dark = false, disabled = false, variant = "volt" }) {
+  const baseClass = variant === "steel"
+    ? "border-[#1E88E5]/50 text-[#FFFFFF] hover:border-[#1E88E5] hover:text-[#1E88E5] hover:shadow-[0_0_20px_rgba(30,136,229,0.3)] hover:bg-[#1E88E5]/10"
+    : "border-[#C8FF3D] text-[#C8FF3D] hover:border-[#C8FF3D] hover:bg-[#C8FF3D] hover:text-[#0B0F14] hover:shadow-[0_0_25px_rgba(200,255,61,0.4)]";
+
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center gap-3 px-9 py-4 text-xs uppercase tracking-[0.25em] transition-colors duration-300 border bg-transparent ${baseClass} ${hoverClass} ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+      className={`inline-flex items-center gap-3 px-8 py-4 text-xs uppercase tracking-[0.25em] font-semibold transition-all duration-300 border bg-transparent ${baseClass} ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer active:scale-95"} ${className}`}
       style={{
         fontFamily: FONT_BODY,
-        fontWeight: 500,
       }}
     >
       {children}
@@ -66,33 +79,35 @@ export function GhostButton({ children, onClick, className = "", dark = false, d
   );
 }
 
-/* ── Monogram — serif only, per the two-font constraint ────────────── */
-export function Mark({ dark = false }) {
-  const color = dark ? PAPER : INK;
+/* ── Monogram — bold athletic brand mark ────────────────────────────── */
+export function Mark({ dark = true }) {
   return (
-    <span
-      style={{
-        fontFamily: FONT_HEADING,
-        fontWeight: 700,
-        letterSpacing: "-0.02em",
-        color,
-      }}
-      className="text-lg"
-    >
-      Rc's
-    </span>
+    <div className="flex items-center gap-1.5 group cursor-pointer">
+      <span
+        style={{
+          fontFamily: FONT_HEADING,
+          fontWeight: 900,
+          letterSpacing: "-0.04em",
+          color: PAPER,
+        }}
+        className="text-xl uppercase tracking-tighter"
+      >
+        Rc's
+      </span>
+      <span className="w-1.5 h-1.5 bg-[#C8FF3D] rounded-full shadow-[0_0_8px_#C8FF3D]" />
+    </div>
   );
 }
 
-/* ── Field — labelled input with error state ─────────────────────── */
+/* ── Field — labelled input with athletic focus states ──────────────── */
 export function Field({ id, label, type, placeholder, required, value, onChange, error }) {
   const errorId = id ? `${id}-error` : undefined;
   return (
     <div>
       <label
         htmlFor={id}
-        className="block text-[11px] uppercase tracking-[0.2em] mb-2"
-        style={{ fontFamily: FONT_BODY, color: MUTED }}
+        className="block text-[11px] uppercase tracking-[0.2em] mb-2 font-medium"
+        style={{ fontFamily: FONT_BODY, color: MUTED_DARK }}
       >
         {label}
       </label>
@@ -105,11 +120,22 @@ export function Field({ id, label, type, placeholder, required, value, onChange,
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={!!error}
         aria-describedby={error && errorId ? errorId : undefined}
-        className="w-full bg-transparent text-base py-2 focus:outline-none"
-        style={{ fontFamily: FONT_BODY, color: INK, borderBottom: `1px solid ${error ? "#B3413E" : INK}` }}
+        className="w-full bg-[#131922] text-sm text-white px-4 py-3 rounded-none focus:outline-none transition-all duration-200 placeholder:text-gray-600"
+        style={{
+          fontFamily: FONT_BODY,
+          border: `1px solid ${error ? "#FF4B4B" : "rgba(255, 255, 255, 0.12)"}`,
+        }}
+        onFocus={(e) => {
+          if (!error) e.target.style.borderColor = VOLT;
+          e.target.style.boxShadow = `0 0 12px ${VOLT}33`;
+        }}
+        onBlur={(e) => {
+          if (!error) e.target.style.borderColor = "rgba(255, 255, 255, 0.12)";
+          e.target.style.boxShadow = "none";
+        }}
       />
       {error && (
-        <p id={errorId} className="text-[11px] mt-1.5" style={{ fontFamily: FONT_BODY, color: "#B3413E" }}>
+        <p id={errorId} className="text-[11px] mt-1.5 font-medium" style={{ fontFamily: FONT_BODY, color: "#FF4B4B" }}>
           {error}
         </p>
       )}
