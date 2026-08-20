@@ -58,7 +58,7 @@ function ShuttleTrail({ d, delay = 0, className = "", width = 500, height = 260,
 }
 
 /* ── Animated gold geometric accent line ──────────────────────────────── */
-function AccentDrawLine({ delay = 0.95 }) {
+function AccentDrawLine({ delay = 0.8 }) {
   const pathRef = useRef(null);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ function AccentDrawLine({ delay = 0.95 }) {
     el.style.strokeDasharray = `${length}`;
     el.style.strokeDashoffset = `${length}`;
     const t = setTimeout(() => {
-      el.style.transition = "stroke-dashoffset 1400ms cubic-bezier(0.16, 1, 0.3, 1)";
+      el.style.transition = "stroke-dashoffset 1200ms cubic-bezier(0.16, 1, 0.3, 1)";
       el.style.strokeDashoffset = "0";
     }, delay * 1000);
     return () => clearTimeout(t);
@@ -76,10 +76,10 @@ function AccentDrawLine({ delay = 0.95 }) {
 
   return (
     <div className="flex justify-center items-center my-4 pointer-events-none">
-      <svg width="120" height="2" viewBox="0 0 120 2" fill="none" className="overflow-visible">
+      <svg width="140" height="2" viewBox="0 0 140 2" fill="none" className="overflow-visible">
         <path
           ref={pathRef}
-          d="M0 1 L120 1"
+          d="M0 1 L140 1"
           stroke={ACCENT}
           strokeWidth="1.5"
           strokeLinecap="round"
@@ -103,10 +103,10 @@ function MagneticButton({ children, onClick }) {
     const centerY = rect.top + rect.height / 2;
     const deltaX = e.clientX - centerX;
     const deltaY = e.clientY - centerY;
-    // Restrained pull (max ~8-10px)
+    // Responsive magnetic attraction (up to 16px displacement)
     setOffset({
-      x: deltaX * 0.2,
-      y: deltaY * 0.2,
+      x: Math.max(-18, Math.min(18, deltaX * 0.35)),
+      y: Math.max(-18, Math.min(18, deltaY * 0.35)),
     });
   }, []);
 
@@ -125,12 +125,12 @@ function MagneticButton({ children, onClick }) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="inline-block"
+      className="inline-block p-3 -m-3 cursor-pointer"
       style={{
         transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
         transition: isHovered
-          ? "transform 180ms cubic-bezier(0.25, 1, 0.5, 1)"
-          : "transform 500ms cubic-bezier(0.25, 1, 0.5, 1)",
+          ? "transform 120ms cubic-bezier(0.25, 1, 0.5, 1)"
+          : "transform 450ms cubic-bezier(0.25, 1, 0.5, 1)",
         willChange: "transform",
       }}
     >
@@ -155,21 +155,21 @@ export default function GeometricHero({ onOpenModal }) {
 
     const loop = () => {
       if (!active) return;
-      // Smooth lerp easing factor 0.055
-      currentPos.current.x += (targetPos.current.x - currentPos.current.x) * 0.055;
-      currentPos.current.y += (targetPos.current.y - currentPos.current.y) * 0.055;
+      // Smooth lerp easing factor
+      currentPos.current.x += (targetPos.current.x - currentPos.current.x) * 0.06;
+      currentPos.current.y += (targetPos.current.y - currentPos.current.y) * 0.06;
 
       const cx = currentPos.current.x;
       const cy = currentPos.current.y;
 
       if (courtLayerRef.current) {
-        courtLayerRef.current.style.transform = `translate3d(${(cx * -10).toFixed(2)}px, ${(cy * -10).toFixed(2)}px, 0)`;
+        courtLayerRef.current.style.transform = `translate3d(${(cx * -20).toFixed(2)}px, ${(cy * -20).toFixed(2)}px, 0)`;
       }
       if (trailsLayerRef.current) {
-        trailsLayerRef.current.style.transform = `translate3d(${(cx * 16).toFixed(2)}px, ${(cy * 16).toFixed(2)}px, 0)`;
+        trailsLayerRef.current.style.transform = `translate3d(${(cx * 32).toFixed(2)}px, ${(cy * 32).toFixed(2)}px, 0)`;
       }
       if (contentLayerRef.current) {
-        contentLayerRef.current.style.transform = `translate3d(${(cx * 6).toFixed(2)}px, ${(cy * 6).toFixed(2)}px, 0)`;
+        contentLayerRef.current.style.transform = `translate3d(${(cx * 12).toFixed(2)}px, ${(cy * 12).toFixed(2)}px, 0)`;
       }
 
       rafId.current = requestAnimationFrame(loop);
@@ -177,33 +177,38 @@ export default function GeometricHero({ onOpenModal }) {
 
     rafId.current = requestAnimationFrame(loop);
 
+    const handleWindowMouseMove = (e) => {
+      if (!heroRef.current) return;
+      const rect = heroRef.current.getBoundingClientRect();
+      // Check if hero is on screen
+      if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+      const x = ((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
+      const y = ((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
+      targetPos.current = {
+        x: Math.max(-1, Math.min(1, x)),
+        y: Math.max(-1, Math.min(1, y)),
+      };
+    };
+
+    const handleWindowMouseLeave = () => {
+      targetPos.current = { x: 0, y: 0 };
+    };
+
+    window.addEventListener("mousemove", handleWindowMouseMove, { passive: true });
+    window.addEventListener("mouseleave", handleWindowMouseLeave, { passive: true });
+
     return () => {
       active = false;
       if (rafId.current) cancelAnimationFrame(rafId.current);
+      window.removeEventListener("mousemove", handleWindowMouseMove);
+      window.removeEventListener("mouseleave", handleWindowMouseLeave);
     };
-  }, []);
-
-  const handleHeroMouseMove = useCallback((e) => {
-    if (!heroRef.current) return;
-    const rect = heroRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    targetPos.current = {
-      x: Math.max(-1, Math.min(1, x)),
-      y: Math.max(-1, Math.min(1, y)),
-    };
-  }, []);
-
-  const handleHeroMouseLeave = useCallback(() => {
-    targetPos.current = { x: 0, y: 0 };
   }, []);
 
   return (
     <section
       id="top"
       ref={heroRef}
-      onMouseMove={handleHeroMouseMove}
-      onMouseLeave={handleHeroMouseLeave}
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white"
     >
       {/* Background layer: court lines with inverse parallax */}
@@ -273,7 +278,7 @@ export default function GeometricHero({ onOpenModal }) {
         </FadeIn>
 
         <FadeIn delay={850}>
-          <AccentDrawLine delay={0.95} />
+          <AccentDrawLine delay={0.9} />
         </FadeIn>
 
         <FadeIn delay={950}>
