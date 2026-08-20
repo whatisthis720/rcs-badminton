@@ -1,11 +1,234 @@
 /* ────────────────────────────────────────────────────────────────────── */
 /* GeometricHero — Kinetic Athletic Hero Section                         */
 /* Charcoal (#0B0F14), Volt Green (#C8FF3D), Steel Blue (#1E88E5)        */
+/* With Biomechanical Line-Art Player Silhouettes & Motion Capture Nodes  */
 /* ────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FONT_HEADING, FONT_BODY, PAPER, MUTED_DARK, VOLT, STEEL, CHARCOAL } from "../lib/tokens.js";
 import { GhostButton } from "./ui.jsx";
+
+/* ── Biomechanical Smash Player Silhouette (Left Backcourt) ──────────── */
+function SmashPlayerSilhouette({ className = "" }) {
+  return (
+    <svg
+      className={`absolute pointer-events-none select-none overflow-visible ${className}`}
+      width="380"
+      height="480"
+      viewBox="0 0 380 480"
+      fill="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="smashVoltFade" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={VOLT} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={STEEL} stopOpacity="0.3" />
+        </linearGradient>
+      </defs>
+
+      <g className="smash-player-group" style={{ opacity: 0.22 }}>
+        {/* ── Kinetic Motion Tracking Arcs (Swing Plane) ── */}
+        <path
+          d="M 230 40 C 270 90, 260 180, 190 240"
+          stroke={VOLT}
+          strokeWidth="1.2"
+          strokeDasharray="4 4"
+          strokeOpacity="0.6"
+          className="animate-pulse"
+        />
+        <path
+          d="M 210 20 C 285 70, 280 200, 160 260"
+          stroke={STEEL}
+          strokeWidth="0.75"
+          strokeDasharray="2 4"
+          strokeOpacity="0.4"
+        />
+
+        {/* ── Kinetic Velocity Measurement Annotation ── */}
+        <text
+          x="280"
+          y="85"
+          fill={VOLT}
+          fillOpacity="0.7"
+          fontSize="8"
+          fontFamily={FONT_BODY}
+          letterSpacing="0.2em"
+          fontWeight="600"
+        >
+          RELEASE: 382 KM/H
+        </text>
+        <line x1="245" y1="82" x2="275" y2="82" stroke={VOLT} strokeWidth="0.75" strokeOpacity="0.5" />
+
+        {/* ── Head & Gaze Vector ── */}
+        <circle cx="160" cy="115" r="14" stroke={VOLT} strokeWidth="1.5" />
+        <circle cx="160" cy="115" r="5" fill={VOLT} fillOpacity="0.4" />
+        {/* Gaze tracking crosshair */}
+        <line x1="174" y1="110" x2="210" y2="90" stroke={VOLT} strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.8" />
+
+        {/* ── Spine & Torso Core ── */}
+        <line x1="160" y1="129" x2="148" y2="185" stroke={PAPER} strokeWidth="2" strokeLinecap="round" />
+        <line x1="148" y1="185" x2="135" y2="245" stroke={PAPER} strokeWidth="2" strokeLinecap="round" />
+        {/* Torso cage ribs in technical steel */}
+        <line x1="145" y1="150" x2="175" y2="145" stroke={STEEL} strokeWidth="1" strokeOpacity="0.7" />
+        <line x1="140" y1="175" x2="168" y2="170" stroke={STEEL} strokeWidth="1" strokeOpacity="0.7" />
+        <line x1="130" y1="210" x2="155" y2="205" stroke={STEEL} strokeWidth="1" strokeOpacity="0.7" />
+
+        {/* ── Counter-Balance Non-Racquet Arm (Left) ── */}
+        <line x1="155" y1="145" x2="110" y2="175" stroke={STEEL} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="110" y1="175" x2="70" y2="195" stroke={STEEL} strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="110" cy="175" r="3" fill={STEEL} />
+        <circle cx="70" cy="195" r="2.5" fill={STEEL} />
+
+        {/* ── Racquet Swing Arm (Right) — Follow-Through Kinematics ── */}
+        <g className="smash-arm-motion">
+          <line x1="165" y1="145" x2="215" y2="110" stroke={VOLT} strokeWidth="2" strokeLinecap="round" />
+          <line x1="215" y1="110" x2="255" y2="70" stroke={VOLT} strokeWidth="2" strokeLinecap="round" />
+          
+          {/* Racquet Shaft & Head */}
+          <line x1="255" y1="70" x2="305" y2="30" stroke={VOLT} strokeWidth="1.75" strokeLinecap="round" />
+          <ellipse cx="325" cy="14" rx="28" ry="16" transform="rotate(-38 325 14)" stroke={VOLT} strokeWidth="1.5" />
+          {/* Racquet String Grid Accents */}
+          <line x1="312" y1="5" x2="338" y2="25" stroke={VOLT} strokeWidth="0.6" strokeOpacity="0.6" />
+          <line x1="318" y1="-2" x2="344" y2="18" stroke={VOLT} strokeWidth="0.6" strokeOpacity="0.6" />
+          <line x1="310" y1="20" x2="335" y2="-5" stroke={VOLT} strokeWidth="0.6" strokeOpacity="0.6" />
+
+          {/* Joint Nodes with Kinetic Glow */}
+          <circle cx="165" cy="145" r="3.5" fill={VOLT} className="shadow-[0_0_8px_#C8FF3D]" />
+          <circle cx="215" cy="110" r="3.5" fill={VOLT} />
+          <circle cx="255" cy="70" r="3" fill={PAPER} />
+        </g>
+
+        {/* ── Pelvis & Airborne Jump Legs ── */}
+        {/* Hip crossbar */}
+        <line x1="120" y1="245" x2="150" y2="245" stroke={PAPER} strokeWidth="2" />
+        <circle cx="135" cy="245" r="4" fill={STEEL} />
+
+        {/* Front Driving Leg (Left) */}
+        <line x1="145" y1="245" x2="170" y2="320" stroke={STEEL} strokeWidth="1.75" strokeLinecap="round" />
+        <line x1="170" y1="320" x2="160" y2="400" stroke={STEEL} strokeWidth="1.75" strokeLinecap="round" />
+        <circle cx="170" cy="320" r="3.5" fill={STEEL} />
+        <circle cx="160" cy="400" r="3" fill={STEEL} />
+        {/* Foot vector */}
+        <line x1="160" y1="400" x2="180" y2="425" stroke={STEEL} strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* Trailing Jump Leg (Right Scissor Kick) */}
+        <line x1="125" y1="245" x2="80" y2="305" stroke={VOLT} strokeWidth="1.75" strokeLinecap="round" />
+        <line x1="80" y1="305" x2="50" y2="385" stroke={VOLT} strokeWidth="1.75" strokeLinecap="round" />
+        <circle cx="80" cy="305" r="3.5" fill={VOLT} />
+        <circle cx="50" cy="385" r="3" fill={VOLT} />
+        {/* Trailing Foot */}
+        <line x1="50" y1="385" x2="30" y2="405" stroke={VOLT} strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* ── Biomechanical Joint Degree Indicators ── */}
+        <path d="M 160 300 A 20 20 0 0 1 175 330" stroke={VOLT} strokeWidth="0.75" fill="none" strokeDasharray="2 2" />
+        <text x="182" y="315" fill={VOLT} fillOpacity="0.7" fontSize="7" fontFamily={FONT_BODY}>136°</text>
+
+        <path d="M 95 295 A 18 18 0 0 0 75 320" stroke={STEEL} strokeWidth="0.75" fill="none" strokeDasharray="2 2" />
+        <text x="50" y="310" fill={STEEL} fillOpacity="0.7" fontSize="7" fontFamily={FONT_BODY}>118°</text>
+      </g>
+    </svg>
+  );
+}
+
+/* ── Biomechanical Defensive Lunge Player Silhouette (Right Forecourt) ── */
+function LungePlayerSilhouette({ className = "" }) {
+  return (
+    <svg
+      className={`absolute pointer-events-none select-none overflow-visible ${className}`}
+      width="420"
+      height="380"
+      viewBox="0 0 420 380"
+      fill="none"
+      aria-hidden="true"
+    >
+      <g className="lunge-player-group" style={{ opacity: 0.18 }}>
+        {/* ── Kinetic Tracking Arc (Reach Vector) ── */}
+        <path
+          d="M 110 160 C 60 200, 40 260, 20 310"
+          stroke={VOLT}
+          strokeWidth="1.2"
+          strokeDasharray="4 4"
+          strokeOpacity="0.5"
+        />
+
+        {/* ── Dimension Annotation ── */}
+        <text
+          x="30"
+          y="150"
+          fill={STEEL}
+          fillOpacity="0.7"
+          fontSize="8"
+          fontFamily={FONT_BODY}
+          letterSpacing="0.2em"
+          fontWeight="600"
+        >
+          REACH SPAN: 2.15M
+        </text>
+        <line x1="25" y1="158" x2="125" y2="158" stroke={STEEL} strokeWidth="0.75" strokeOpacity="0.4" />
+
+        {/* ── Head & Focus Vector ── */}
+        <circle cx="210" cy="95" r="13" stroke={STEEL} strokeWidth="1.5" />
+        <circle cx="210" cy="95" r="4.5" fill={STEEL} fillOpacity="0.4" />
+        {/* Low Net Focus Vector */}
+        <line x1="198" y1="100" x2="120" y2="140" stroke={STEEL} strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.7" />
+
+        {/* ── Low Aerodynamic Torso / Spine ── */}
+        <line x1="210" y1="108" x2="245" y2="155" stroke={PAPER} strokeWidth="2" strokeLinecap="round" />
+        <line x1="245" y1="155" x2="280" y2="205" stroke={PAPER} strokeWidth="2" strokeLinecap="round" />
+        {/* Rib markings */}
+        <line x1="220" y1="130" x2="242" y2="120" stroke={VOLT} strokeWidth="1" strokeOpacity="0.6" />
+        <line x1="240" y1="160" x2="262" y2="150" stroke={VOLT} strokeWidth="1" strokeOpacity="0.6" />
+
+        {/* ── Non-Racquet Counterbalance Arm (Up/Back) ── */}
+        <line x1="230" y1="130" x2="285" y2="100" stroke={STEEL} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="285" y1="100" x2="335" y2="75" stroke={STEEL} strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="285" cy="100" r="3" fill={STEEL} />
+        <circle cx="335" cy="75" r="2.5" fill={STEEL} />
+
+        {/* ── Low Reaching Racquet Arm (Forward Under Net) ── */}
+        <g className="lunge-reach-motion">
+          <line x1="215" y1="130" x2="160" y2="165" stroke={VOLT} strokeWidth="2" strokeLinecap="round" />
+          <line x1="160" y1="165" x2="105" y2="195" stroke={VOLT} strokeWidth="2" strokeLinecap="round" />
+          
+          {/* Racquet Shaft & Low Frame */}
+          <line x1="105" y1="195" x2="50" y2="215" stroke={VOLT} strokeWidth="1.75" strokeLinecap="round" />
+          <ellipse cx="28" cy="225" rx="24" ry="14" transform="rotate(22 28 225)" stroke={VOLT} strokeWidth="1.5" />
+          {/* Strings */}
+          <line x1="18" y1="218" x2="38" y2="232" stroke={VOLT} strokeWidth="0.6" strokeOpacity="0.6" />
+          <line x1="22" y1="212" x2="42" y2="226" stroke={VOLT} strokeWidth="0.6" strokeOpacity="0.6" />
+
+          {/* Joint Nodes */}
+          <circle cx="215" cy="130" r="3.5" fill={VOLT} />
+          <circle cx="160" cy="165" r="3.5" fill={VOLT} />
+          <circle cx="105" cy="195" r="3" fill={PAPER} />
+        </g>
+
+        {/* ── Pelvis & Deep Athletic Lunge Stance ── */}
+        <circle cx="280" cy="205" r="4.5" fill={STEEL} />
+
+        {/* Front Deep Lunging Leg (Left Forward) */}
+        <line x1="280" y1="205" x2="200" y2="245" stroke={VOLT} strokeWidth="2" strokeLinecap="round" />
+        <line x1="200" y1="245" x2="195" y2="335" stroke={VOLT} strokeWidth="2" strokeLinecap="round" />
+        <circle cx="200" cy="245" r="4" fill={VOLT} />
+        <circle cx="195" cy="335" r="3.5" fill={VOLT} />
+        {/* Planted Foot Base */}
+        <line x1="180" y1="340" x2="220" y2="340" stroke={VOLT} strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Back Extended Anchor Leg (Right Trailing) */}
+        <line x1="280" y1="205" x2="355" y2="270" stroke={STEEL} strokeWidth="1.75" strokeLinecap="round" />
+        <line x1="355" y1="270" x2="410" y2="335" stroke={STEEL} strokeWidth="1.75" strokeLinecap="round" />
+        <circle cx="355" cy="270" r="3.5" fill={STEEL} />
+        <circle cx="410" cy="335" r="3" fill={STEEL} />
+        {/* Trailing Toe Contact */}
+        <line x1="410" y1="335" x2="425" y2="342" stroke={STEEL} strokeWidth="1.75" strokeLinecap="round" />
+
+        {/* Joint Flexion Angle */}
+        <path d="M 220 235 A 22 22 0 0 1 195 265" stroke={VOLT} strokeWidth="0.75" fill="none" strokeDasharray="2 2" />
+        <text x="210" y="270" fill={VOLT} fillOpacity="0.7" fontSize="7" fontFamily={FONT_BODY}>88° LUNGE</text>
+      </g>
+    </svg>
+  );
+}
 
 /* ── Badminton Court Background Blueprint (Kinetic Athletic) ─────────── */
 function CourtLines() {
@@ -36,16 +259,12 @@ function CourtLines() {
       <rect x="240" y="570" width="360" height="140" fill="url(#kineticNetMesh)" />
 
       {/* ── Outer Tramlines & Boundary Framing ── */}
-      {/* Outer framing line (Hairline Steel) */}
       <rect x="120" y="70" width="960" height="660" stroke={STEEL} strokeWidth="0.75" strokeOpacity="0.2" />
-      {/* Outer Doubles Boundary (Clean Steel Blue) */}
       <rect x="140" y="90" width="920" height="620" stroke={STEEL} strokeWidth="1.75" strokeOpacity="0.35" />
-      {/* Inner offset volt accent hairline */}
       <rect x="144" y="94" width="912" height="612" stroke={VOLT} strokeWidth="0.5" strokeOpacity="0.3" />
 
       {/* ── Center Service Line ── */}
       <line x1="600" y1="90" x2="600" y2="710" stroke={STEEL} strokeWidth="1.25" strokeOpacity="0.3" />
-      {/* Center line volt precision dashes */}
       <line x1="600" y1="230" x2="600" y2="570" stroke={VOLT} strokeWidth="1" strokeOpacity="0.6" strokeDasharray="8 6" />
 
       {/* ── Center Net Line with High-Energy Volt Gradient Accent ── */}
@@ -56,14 +275,12 @@ function CourtLines() {
       {/* ── Short Service Lines (Front Court) ── */}
       <line x1="140" y1="230" x2="1060" y2="230" stroke={STEEL} strokeWidth="1.25" strokeOpacity="0.3" />
       <line x1="140" y1="570" x2="1060" y2="570" stroke={STEEL} strokeWidth="1.25" strokeOpacity="0.3" />
-      {/* Volt tracking highlights along service boundaries */}
       <line x1="240" y1="230" x2="960" y2="230" stroke={VOLT} strokeWidth="1" strokeOpacity="0.5" strokeDasharray="4 4" />
       <line x1="240" y1="570" x2="960" y2="570" stroke={VOLT} strokeWidth="1" strokeOpacity="0.5" strokeDasharray="4 4" />
 
       {/* ── Singles Sidelines ── */}
       <line x1="240" y1="90" x2="240" y2="710" stroke={STEEL} strokeWidth="1.2" strokeOpacity="0.25" />
       <line x1="960" y1="90" x2="960" y2="710" stroke={STEEL} strokeWidth="1.2" strokeOpacity="0.25" />
-      {/* Singles tramlines volt accent hairlines */}
       <line x1="236" y1="90" x2="236" y2="710" stroke={VOLT} strokeWidth="0.5" strokeOpacity="0.3" />
       <line x1="964" y1="90" x2="964" y2="710" stroke={VOLT} strokeWidth="0.5" strokeOpacity="0.3" />
 
@@ -72,18 +289,15 @@ function CourtLines() {
       <line x1="140" y1="670" x2="1060" y2="670" stroke={STEEL} strokeWidth="0.8" strokeDasharray="6 6" strokeOpacity="0.25" />
 
       {/* ── Precision Athletic Registration Crosshairs ── */}
-      {/* Net center intersection */}
       <g stroke={VOLT} strokeWidth="1.2" strokeOpacity="0.9">
         <line x1="590" y1="400" x2="610" y2="400" />
         <line x1="600" y1="390" x2="600" y2="410" />
         <circle cx="600" cy="400" r="4.5" fill="none" strokeWidth="0.8" stroke={VOLT} strokeOpacity="0.8" />
       </g>
-      {/* Service T-Junctions */}
       <g stroke={STEEL} strokeWidth="1" strokeOpacity="0.75">
         <line x1="593" y1="230" x2="607" y2="230" /><line x1="600" y1="223" x2="600" y2="237" />
         <line x1="593" y1="570" x2="607" y2="570" /><line x1="600" y1="563" x2="600" y2="577" />
       </g>
-      {/* Corner Registration Crosshairs in Volt */}
       <g stroke={VOLT} strokeWidth="1" strokeOpacity="0.65">
         <line x1="132" y1="90" x2="148" y2="90" /><line x1="140" y1="82" x2="140" y2="98" />
         <line x1="1052" y1="90" x2="1068" y2="90" /><line x1="1060" y1="82" x2="1060" y2="98" />
@@ -163,18 +377,15 @@ function ShuttlecockIcon({ size = 28 }) {
       className="overflow-visible"
       aria-hidden="true"
     >
-      {/* Aerodynamic Feather Skirt Ribs in Volt */}
       <path d="M 18 16 L 3 9" stroke={VOLT} strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.9" />
       <path d="M 19 16 L 2 13" stroke={PAPER} strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.95" />
       <path d="M 20 16 L 2 16" stroke={VOLT} strokeWidth="1.6" strokeLinecap="round" />
       <path d="M 19 16 L 2 19" stroke={PAPER} strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.95" />
       <path d="M 18 16 L 3 23" stroke={VOLT} strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.9" />
 
-      {/* Cross Feather Binding Threads in Steel Blue */}
       <path d="M 9 11.5 Q 7.5 16 9 20.5" stroke={STEEL} strokeWidth="1.2" strokeLinecap="round" strokeOpacity="0.9" />
       <path d="M 14 13.5 Q 13 16 14 18.5" stroke={VOLT} strokeWidth="1.2" strokeLinecap="round" />
 
-      {/* Rounded Cork Base (Leading) in Volt with Glow */}
       <path
         d="M 20 13 C 23.5 13 26 14.2 26 16 C 26 17.8 23.5 19 20 19 Z"
         fill={VOLT}
@@ -272,8 +483,7 @@ function HeroShuttleFlight() {
           }}
         />
 
-        {/* ── Multi-Scale Atmospheric Trajectory Arcs in Steel & Volt ── */}
-        {/* High Clear Sweeping Arc (Top Volt) */}
+        {/* Multi-Scale Atmospheric Trajectory Arcs */}
         <path
           d="M -80 340 C 320 -20, 880 -10, 1260 240"
           stroke={VOLT}
@@ -282,8 +492,6 @@ function HeroShuttleFlight() {
           strokeDasharray="6 6"
           strokeOpacity="0.3"
         />
-
-        {/* Drive Flat Trajectory (Mid-Court Steel Blue) */}
         <path
           d="M 40 560 C 380 200, 880 160, 1180 420"
           stroke={STEEL}
@@ -292,8 +500,6 @@ function HeroShuttleFlight() {
           strokeDasharray="5 7"
           strokeOpacity="0.4"
         />
-
-        {/* Crosscourt Steep Drop Shot (Left Steel) */}
         <path
           d="M -20 180 Q 220 380 160 680"
           stroke={STEEL}
@@ -302,8 +508,6 @@ function HeroShuttleFlight() {
           strokeDasharray="6 4"
           strokeOpacity="0.35"
         />
-
-        {/* Reverse Crosscourt Angle (Right Volt) */}
         <path
           d="M 1240 500 Q 940 320 820 620"
           stroke={VOLT}
@@ -452,7 +656,7 @@ function MagneticCTAButton({ children, onClick }) {
         willChange: "transform",
       }}
     >
-      <GhostButton onClick={onClick} className="!px-10 !py-4.5 text-sm">
+      <GhostButton onClick={onClick} className="!px-10 !py-4.5 text-sm font-bold">
         {children}
       </GhostButton>
     </div>
@@ -463,6 +667,7 @@ function MagneticCTAButton({ children, onClick }) {
 export default function GeometricHero({ onOpenModal }) {
   const heroRef = useRef(null);
   const courtLayerRef = useRef(null);
+  const playerLayerRef = useRef(null);
   const midLayerRef = useRef(null);
   const contentLayerRef = useRef(null);
 
@@ -492,12 +697,17 @@ export default function GeometricHero({ onOpenModal }) {
         courtLayerRef.current.style.transform = `translate3d(${(cx * -22).toFixed(2)}px, ${(cy * -22).toFixed(2)}px, 0)`;
       }
 
-      // Layer 2: Trajectory flight and arcs (distinct forward shift)
+      // Layer 2: Player Silhouettes (medium shift with depth)
+      if (playerLayerRef.current) {
+        playerLayerRef.current.style.transform = `translate3d(${(cx * 18).toFixed(2)}px, ${(cy * 18).toFixed(2)}px, 0)`;
+      }
+
+      // Layer 3: Trajectory flight and arcs (distinct forward shift)
       if (midLayerRef.current) {
         midLayerRef.current.style.transform = `translate3d(${(cx * 34).toFixed(2)}px, ${(cy * 34).toFixed(2)}px, 0)`;
       }
 
-      // Layer 3: Foreground typography & CTA (gentle foreground shift)
+      // Layer 4: Foreground typography & CTA (gentle foreground shift)
       if (contentLayerRef.current) {
         contentLayerRef.current.style.transform = `translate3d(${(cx * 10).toFixed(2)}px, ${(cy * 10).toFixed(2)}px, 0)`;
       }
@@ -574,6 +784,22 @@ export default function GeometricHero({ onOpenModal }) {
           50% { transform: translateY(-8px) rotate(-3deg); }
           100% { transform: translateY(6px) rotate(3deg); }
         }
+        @keyframes smashSwingLoop {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(-4deg) translateY(-2px); }
+        }
+        @keyframes lungeFlexLoop {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(4px) scaleY(0.98); }
+        }
+        .smash-arm-motion {
+          animation: smashSwingLoop 4.5s ease-in-out infinite;
+          transform-origin: 165px 145px;
+        }
+        .lunge-reach-motion {
+          animation: lungeFlexLoop 5s ease-in-out infinite;
+          transform-origin: 200px 245px;
+        }
       `}</style>
 
       {/* ── Background Kinetic Glow & Ambient Lighting ── */}
@@ -589,12 +815,24 @@ export default function GeometricHero({ onOpenModal }) {
         aria-hidden="true"
       />
 
-      {/* ── Background Layer: Badminton Court Blueprint (Inverse Parallax) ── */}
+      {/* ── Background Layer 1: Badminton Court Blueprint (Inverse Parallax) ── */}
       <div
         ref={courtLayerRef}
         className="absolute inset-0 pointer-events-none will-change-transform"
       >
         <CourtLines />
+      </div>
+
+      {/* ── Background Layer 2: Biomechanical Line-Art Player Silhouettes ── */}
+      <div
+        ref={playerLayerRef}
+        className="absolute inset-0 pointer-events-none overflow-hidden will-change-transform"
+      >
+        {/* Player 1: Backcourt Jump Smash (Left, linked to trajectory origin) */}
+        <SmashPlayerSilhouette className="-left-6 md:left-[3%] top-[14%] md:top-[16%]" />
+
+        {/* Player 2: Forecourt Deep Defensive Lunge (Right, under net line) */}
+        <LungePlayerSilhouette className="-right-8 md:right-[2%] bottom-[6%] md:bottom-[10%]" />
       </div>
 
       {/* ── Mid Layer: Hero Shuttle Flight & Trajectory Arcs (Positive Parallax) ── */}
